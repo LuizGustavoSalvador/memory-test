@@ -1,21 +1,21 @@
 :root {
   --greenDefault: green;
   --yelloDefault: yellow;
-
   --light: 300;
   --regular: 400;
   --medium: 500;
   --bold: 700;
 }
-
-a{
+body {
+  background-color: aquamarine;
+}
+a {
   color: var(--greenDefault);
   cursor: pointer;
-  :hover{
-    color: var(--yelloDefault);
-  }
 }
-
-h1{
+a :hover {
+  color: var(--yelloDefault);
+}
+h1 {
   color: var(--greenDefault);
 }
