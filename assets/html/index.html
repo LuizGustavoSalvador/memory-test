@@ -5,19 +5,23 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="/css/default.css">
     <link rel="stylesheet" href="/css/style.css">
-    <!--<script src="assets/js/main.js"></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <header class="main-header">
       <div class="header-grid">
           <div class="menu-wrapper">
               <ul class="menu-principal" role="navigation">
-                  <li class="menu-item"><a class="link-menu" href="#">Home</a></li>
-                  <li class="menu-item"><a class="link-menu" href="#">Criar Teste aaaa</a></li>
+                  <li class="menu-item"><a class="link-menu" href="/">Home</a></li>
+                  <li class="menu-item"><a class="link-menu" href="/user/register">Cadastrar usuário</a></li>
               </ul>
           </div>
       </div>
     </header>
-    {{login}}
+    <div class="main-content">
+      {{component}}
+    </div>
     </body>
 </html>
