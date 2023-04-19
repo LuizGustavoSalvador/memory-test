@@ -1,8 +1,11 @@
+const { error } = require('console');
 const express = require('express');
 const fs = require('fs');
+const uuid = require("uuid");
+
 const router = express.Router();
 
-router.get("/register", (req, res) => {
+router.get("/registra", (req, res) => {
   let html = fs.readFileSync("././assets/html/index.html");
   const register = fs.readFileSync("././assets/html/user/register.html");
   html = html.toString().replace("{{component}}", register)
@@ -33,13 +36,14 @@ router.post("/register", (req, res) => {
   }
 
   if(errors.length > 0){
-    res.render("././assets/html/index.htm", {errors: errors});
-  }
+    const a = fs.readFileSync("././assets/html/index.html");
+   res.end(alert(JSON.stringify(errors)));
+  }else{
+    var data = {"id": uuid.v4(), "name": req.body.name, "email": req.body.email, "password": req.body.password};
 
-  let html = fs.readFileSync("././assets/html/index.html");
-  const register = fs.readFileSync("././assets/html/user/register.html");
-  html = html.toString().replace("{{component}}", register)
-  res.end(html)
+    fs.writeFileSync("./src/data/user.json", JSON.stringify(data));
+    res.status(201).end('completo');
+  }
 });
 
 module.exports = router;

@@ -8,5 +8,10 @@ const app = express();
 
 app.use(express.static(__dirname + '/assets'));
 app.use(routes);
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: false
+}));
+
 app.use('/user', user);
 app.listen(PORT, HOST);
