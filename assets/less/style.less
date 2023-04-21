@@ -1,6 +1,5 @@
 :root {
-  --greenDefault: green;
-  --yelloDefault: yellow;
+  --blue: #0b0f35;
 
   --light: 300;
   --regular: 400;
@@ -8,13 +7,94 @@
   --bold: 700;
 }
 
+.DisplayFlex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.FlexAlignCenter {
+  .DisplayFlex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.FlexJustCenter {
+  .DisplayFlex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.FlexSpaceBetween {
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.FlexPower {
+  .DisplayFlex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.FlexColumn {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.FlexEnd {
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+}
+
+.FlexJustEnd {
+  .DisplayFlex;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.FlexWrap {
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.TransitionPadrao {
+  -webkit-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: orange;
+}
+
+h1 {
+  text-align: center;
+  padding: calc(~"16.000px + 1.250vw") 0;
+  font-size: calc(~"28.000px + 0.625vw");
+  color: var(--blue);
+}
+
+h2{
+  font-size: calc(~"21.600px + 0.438vw");
+}
+
+p{
+  font-size: calc(~"15.600px + 0.125vw");
 }
 
 a {
-  color: var(--greenDefault);
+  font-size: calc(~"15.600px + 0.125vw");
   cursor: pointer;
 
   :hover {
@@ -22,20 +102,48 @@ a {
   }
 }
 
-h1 {
-  font-size: 40px;
-  color: var(--greenDefault);
+.btn-default{
+  cursor: pointer;
+  font-size: calc(~"15.600px + 0.125vw");
+  color: white;
+  background-color: var(--blue);
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  .TransitionPadrao;
+  &:hover{
+    border-color: var(--blue);
+    color: var(--blue);
+    background-color: white;
+  }
 }
 
 .main-header {
+  background-color: var(--blue);
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 9999;
-  padding: 15px calc(-305.217px + 31.522vw);
+  padding: 15px calc(~"-305.217px + 31.522vw");
 
   .header-grid {
+    .FlexAlignCenter;
+    .logo-link{
+      cursor: pointer;
+      position: relative;
+      display: block;
+      padding-right: calc(~"-37.826px + 9.783vw");
+
+      img{
+        display: block;
+        width: 50px;
+        -o-object-fit: cover;
+           object-fit: cover;
+        -o-object-position: center;
+           object-position: center;
+      }
+    }
     ul {
       list-style: none;
       display: flex;
@@ -66,6 +174,9 @@ h1 {
             }
           }
         }
+        &:not(:last-child){
+          margin-right: 25px;
+        }
       }
     }
   }
@@ -86,6 +197,8 @@ h1 {
   }
 
   input, select{
+    border: 1px solid var(--blue);
+    border-radius: 4px;
     font-size: 18px;
     width: 100%;
     padding: 10px;
@@ -98,14 +211,43 @@ h1 {
   }
 
   .button{
-    display: flex;
-    justify-content: flex-end;
+    .FlexJustEnd;
     margin-top: 25px;
-    font-size: 20px;
-    padding: 10px 30px;
   }
 }
 
-.register {
-  background-color: blue;
+// Test
+.list-test{
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 15px 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  -webkit-column-gap: 15px;
+  -moz-column-gap: 15px;
+  column-gap: 15px;
+  row-gap: 15px;
+  .test{
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid var(--blue);
+    padding: 15px;
+    .TransitionPadrao;
+
+    h2{
+      margin-bottom: 10px;
+    }
+
+    span{
+      font-weight: var(--bold);
+      color: var(--blue);
+    }
+
+    &:hover{
+      border-color: transparent;
+      background-color: var(--blue);
+      *{
+        color: white;
+      }
+    }
+  }
 }

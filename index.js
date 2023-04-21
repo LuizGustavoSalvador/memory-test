@@ -1,6 +1,7 @@
 const express = require('express');
 const routes = require('./src/routes/route');
 const user = require('./src/routes/user');
+const test = require('./src/routes/test');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
@@ -14,4 +15,5 @@ app.use(express.urlencoded({
 }));
 
 app.use('/user', user);
+app.use('/test', test);
 app.listen(PORT, HOST);
