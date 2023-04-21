@@ -1,5 +1,6 @@
 :root {
   --blue: #0b0f35;
+  --gray: #b3b3b3;
 
   --light: 300;
   --regular: 400;
@@ -103,6 +104,7 @@ a {
 }
 
 .btn-default{
+  display: block;
   cursor: pointer;
   font-size: calc(~"15.600px + 0.125vw");
   color: white;
@@ -115,6 +117,16 @@ a {
     border-color: var(--blue);
     color: var(--blue);
     background-color: white;
+  }
+
+  &.disabled-button{
+    cursor:auto;
+    background-color: var(--gray);
+    border: none;
+    &:hover{
+      color: white;
+      background-color: #b3b3b3;
+    }
   }
 }
 
@@ -188,7 +200,7 @@ a {
 }
 
 .form-default{
-  width: 600px;
+  width: 750px;
   padding: 20px 0;
   margin: auto;
 
@@ -231,7 +243,10 @@ a {
     border-radius: 4px;
     border: 1px solid var(--blue);
     padding: 15px;
-    .TransitionPadrao;
+    
+    *{
+      .TransitionPadrao;
+    }
 
     h2{
       margin-bottom: 10px;
@@ -249,5 +264,29 @@ a {
         color: white;
       }
     }
+  }
+}
+
+// Questions
+.question-component{
+  form{
+    .question{
+      border-radius: 5px;
+      border: 1px solid var(--blue);
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    p{
+      margin-bottom: 15px;
+    }
+
+    .btn-default{
+      margin: auto;
+      margin-right: 0;
+    }
+  }
+  .options-list{
+    padding: 15px 0 0 15px;
   }
 }
