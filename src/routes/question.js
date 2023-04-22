@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const uuid = require("uuid");
-const axios = require('axios');
+// const axios = require('axios');
 
 const router = express.Router();
 
@@ -13,10 +13,12 @@ router.get("/", (req, res) => {
 });
 
 router.post("/store", async (req, res) => {
-    let data = {};
+  let jsonPath = "./src/data/question.json";
+  let dataFile = JSON.parse(fs.readFileSync(jsonPath));
 
-    fs.writeFileSync("./src/data/question.json", JSON.stringify(req.body));
-    res.status(201).send(req.body);
+  //dataFile.push(req.body);
+  //fs.writeFileSync(jsonPath, JSON.stringify(dataFile));
+  res.status(201).send(JSON.stringify(req.body));
 })
 // router.post("/store", (req, res) => {
 //     console.log(req.body);

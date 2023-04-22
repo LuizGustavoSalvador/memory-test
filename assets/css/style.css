@@ -128,6 +128,7 @@ a :hover {
   width: 100%;
   z-index: 9999;
   padding: 15px calc(-305.217px + 31.522vw);
+  box-shadow: 0 4px 10px #ffffff78;
 }
 .main-header .header-grid {
   display: -webkit-box;
@@ -180,6 +181,7 @@ a :hover {
   margin-right: 25px;
 }
 .main-content {
+  min-height: 80vh;
   margin: 0 calc(-305.217px + 31.522vw);
   margin-top: 110px;
 }
@@ -262,4 +264,90 @@ a :hover {
 }
 .question-component .options-list {
   padding: 15px 0 0 15px;
+}
+.footer-grid {
+  background-color: var(--blue);
+  padding-bottom: 20px;
+}
+.footer-grid * {
+  color: white;
+}
+.footer-grid .footer-content {
+  display: -ms-grid;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 20px calc(-305.217px + 31.522vw);
+  padding-top: 60px;
+}
+.footer-grid .footer-content a {
+  position: relative;
+  display: block;
+  width: fit-content;
+  color: white;
+  font-size: 20px;
+}
+.footer-grid .footer-content a::before {
+  content: "";
+  height: 1px;
+  position: absolute;
+  background: white;
+  width: 0;
+  bottom: -4px;
+  transition: width 0.2s;
+}
+.footer-grid .footer-content a:hover:before {
+  width: 30px;
+}
+.footer-grid .projeto {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+.footer-grid .projeto img {
+  margin-right: 50px;
+  width: 60px;
+}
+.footer-grid .devers {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.footer-grid .devers img {
+  width: 30px;
+}
+.footer-grid .devers a {
+  display: block;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+.footer-grid .devers a img {
+  margin-right: 5px;
+}
+.footer-grid .devers a:before {
+  left: 40px;
+}
+.footer-grid .subfooter {
+  text-align: center;
+  padding: 5px calc(-305.217px + 31.522vw);
 }

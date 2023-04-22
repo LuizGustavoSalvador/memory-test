@@ -10,10 +10,10 @@ const app = express();
 
 app.use(express.static(__dirname + '/assets'));
 app.use(routes);
-app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
+app.use(express.json());
 
 app.use('/question', question);
 app.use('/test', test);

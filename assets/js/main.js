@@ -23,7 +23,7 @@ function addoption(id){
 }
 
 window.onload=function(){
-    // document.getElementById("questionRegisterForm").addEventListener("submit", (e) => e.preventDefault());
+    //document.getElementById("questionRegisterForm").addEventListener("submit", (e) => e.preventDefault());
 
     var id = 2;
     var idQuestion = 1;
@@ -45,6 +45,11 @@ window.onload=function(){
 
       return true;
     });
+
+    var form = document.querySelector('#questionRegisterForm');
+    var data = new FormData(form);
+
+    console.log(data);
     
   
   // $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
