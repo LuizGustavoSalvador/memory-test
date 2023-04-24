@@ -1,6 +1,6 @@
 <div class="question-component">
   <h1 class="title-page">Perguntas</h1>
-  <form action="/question/store" method="POST" id="questionRegisterForm" class="form-default">
+  <form action="/test/{{slug}}/question/store" method="POST" id="questionRegisterForm" class="form-default">
     <div class="questions-list-fields">
       <div class="question" id-question="1" tabindex=1>
         <label for="question">Pergunta 1:</label>
@@ -10,7 +10,7 @@
           <div class="options-list" name="question[1][options]">
             <input class="form-control" type="text"  alternative="A" id="option" name="question_options_option" placeholder="Alternativa A" required>
           </div>
-          <button id="addOption1" class="btn-default" type="button" question=1 onclick="addoption(1)">Adicionar Opção</button>
+          <button id="addOption1" class="btn-default" type="button" question=1 onclick="addoption(1, 1)">Adicionar Opção</button>
         </div>
         <div id="answerlist1" class="answer-question">
           <p>Resposta:</p>

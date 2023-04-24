@@ -13,12 +13,18 @@
       <label for="password">Senha:</label>
       <input class="form-control" type="password" id="password" name="password" placeholder="Senha" required>
     </div>
-    <div>
+    <!-- <div>
       <label for="passwordRepeat">Repita a sua senha:</label>
       <input class="form-control" type="password" id="passwordRepeat" name="passwordRepeat" placeholder="Repita a sua senha" required>
-    </div>
+    </div> -->
     <div class="button">
       <button class="btn-default" type="submit">Criar conta</button>
     </div>
   </form>
+  <div class="list-user-wrapper">
+    <h2 class="page-subtitle">Lista de usuários</h2>
+    <div class="list-user">
+      {{users}}
+    </div>
+  </div>
 </div>
