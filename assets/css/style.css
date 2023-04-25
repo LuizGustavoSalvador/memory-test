@@ -125,6 +125,26 @@ a :hover {
   color: white;
   background-color: #b3b3b3;
 }
+.toast-message {
+  display: block;
+  position: fixed;
+  top: 100px;
+  padding: 20px;
+  right: 20px;
+  transform: translateX(50%, 0);
+  z-index: 999999;
+  border-radius: 4px;
+  color: white;
+}
+.toast-message * {
+  font-size: 23px;
+}
+.toast-message.success {
+  background-color: green;
+}
+.toast-message.error {
+  background-color: red;
+}
 .main-header {
   background-color: var(--blue);
   position: fixed;
@@ -186,6 +206,7 @@ a :hover {
   margin-right: 25px;
 }
 .main-content {
+  position: relative;
   min-height: 80vh;
   margin: 0 calc(-305.217px + 31.522vw);
   margin-top: 110px;
@@ -262,6 +283,29 @@ a :hover {
 }
 .test-component .list-test-wrapper .list-test .test:hover {
   background-color: var(--lightBlue);
+}
+.no-questions-component {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.no-questions-component a {
+  margin-top: 20px;
+  color: white;
 }
 .question-component form .question {
   border-radius: 5px;

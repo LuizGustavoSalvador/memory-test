@@ -48,58 +48,45 @@ router.post("/store", (req, res) => {
 
 router.get("/:slug/question", (req, res) => {
   let slug = req.params.slug;
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === slug);
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === slug); 
   let html = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let question = fs.readFileSync('././assets/html/question/question.html', 'utf-8');
+
+  if(test.length === 1){
+    let questions = test[0].questions ? test[0].questions.length : 0;
+    let numQuestions = test[0].numQuestions - questions;
+    res.cookie('maxQuestions', numQuestions > 0 ? numQuestions : 0);
+    res.cookie('maxOptions', test[0].maxOptions);
+
+    if(numQuestions < 0){
+      question = fs.readFileSync('././assets/templates/no-questions.html', 'utf-8');
+    }
+  }
+
+  
   question = question.replace("{{testId}}", test[0].id);
   html = html.replace("{{component}}", question);
   html = html.replace("{{jsCustom}}", '<script src="/js/question.js"></script>')
-  
-  if(test.length === 1){
-    res.cookie('maxQuestions', test[0].numQuestions);
-    res.cookie('maxOptions', test[0].maxOptions);
-  }
 
   res.end(html);
 });
 
-router.post("/question/store", async (req, res) => {
-  let testId = req.body.test_id;
+router.post("/question/store", (req, res) => {
+  let data = req.body;
   let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
-  // const {name, email, password} = req.body;
-  // const id = uuid.v1();
-  // const question = {id, name, email, password}; 
-  // users.push(user);
   let testData = testFile.map((t) => {
-      if(testId === t.id){
-        if(t.questions === null || t.questions === "undefined"){
-          t.questions = [];
-        }else{
-          t.questions.push(req.body.questions);
+      if(data.test_id === t.id){
+        if(t.questions === null || t.questions === "undefined" || !t.questions){
+         t.questions = [];
         }
+        t.questions.push(data.questions);
       }
-      
-      return test;
+      return t;
     });
   
-    fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), {encoding: "utf-8"});
-  res.status(201).send('oiiii');
-  // let test = tests.map((t) => {
-  //   if(testId === t.id){
-  //     if(t.questions === null || t.questions === "undefined"){
-  //       t.questions = [];
-  //     }else{
-  //     }
-  //   }
-    
-  //   return test;
-  // });
+  fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), {encoding: "utf-8"});  
 
-  // fs.writeFileSync("./src/data/test.json", JSON.stringify(test), {encoding: "utf-8"});
-
-  //dataFile.push(req.body);
-  //fs.writeFileSync(jsonPath, JSON.stringify(dataFile));
-  res.redirect('/test/' +slug+'/question');
-})
+  res.status(201).send(testData);
+});
 
 module.exports = router;

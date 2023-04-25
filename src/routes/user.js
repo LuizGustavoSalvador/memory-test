@@ -53,23 +53,29 @@ router.post("/register", (req, res) => {
 });
 
 router.post('/login', function(req, res){
- let html = fs.readFileSync("././assets/html/index.html");
   const users = JSON.parse(fs.readFileSync('./src/data/user.json', {encoding: "utf-8"}));
   const {email, password} = req.body;
   const login = {email, password};
+  const errors = [];
 
   if(users.filter(user => user.email === login.email).length === 0){
-    res.send('Usuário não encontrado');
-    res.redirect('/');
-  }else{
-    if(users.filter(user => user.password === login.password).length === 0){
-      res.send('Senha incorreta');
-      res.redirect('/');
-    }
+    errors.push({
+      text: 'Usuário não encontrado'
+    });
+  }
+
+  if(users.filter(user => user.password === login.password).length === 0){
+    errors.push({
+      text: 'Senha incorreta'
+    });
   }
   
-
-  res.redirect('../test');
+  if(errors.length > 0){
+    res.status(400).send(errors);
+  }else{
+    res.status(200).send({opa: "tudo bão"});
+    //res.redirect('../test');
+  }
 
 });
 

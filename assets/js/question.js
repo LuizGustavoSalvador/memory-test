@@ -1,7 +1,8 @@
+const url = 'http://localhost:3000/test/question';
 let lastId = 0;
 let questionConfig = [];
-let urlDefault = 'http://localhost:3000/test/question';
 const maxOptions = getCookie("maxOptions");
+const maxQuestions = getCookie("maxQuestions");
 
 function getCookie(cookieName) {
   let cookie = {};
@@ -14,8 +15,8 @@ function getCookie(cookieName) {
   return cookie[cookieName];
 }
 
-function submit() {
-  const result = {
+async function submit() {
+  let result = {
     test_id: document.querySelector("form #testId").value,
     questions: []
   };
@@ -34,24 +35,41 @@ function submit() {
     }
   }
 
-  fetch('http://localhost:3000/test/question/store', {
-    method: 'POST',
-    headers: {
-        //'Accept': 'application/json',
+  try {
+    await fetch("/test/question/store", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(result)
-  })
+      },
+      body: JSON.stringify(result),
+    }).then(response => response.json())
+    .then((response) => {
+      document.querySelector('form').reset();
+      let success = document.createElement('div');
+      success.classList.add('toast-message', 'success');
+      success.innerHTML = '<p>Perguntas cadastradas com sucesso</p>';
+      document.querySelector('.main-content').appendChild(success);
+  
+      setTimeout(() => {
+        success.remove();
+      }, 3000);
+    });
+    
+  } catch (error) {
+    console.log(error);
+  }
+
 };
 
 function createQuestion() {
   lastId++;
 
-  if (lastId > getCookie('maxQuestions')) {
+  if (lastId > maxQuestions) {
     let button = document.getElementById('addQuestion');
     button.disabled = true;
     button.classList.add('disabled-button');
-    button.setAttribute('title', 'você só pode adicionar ' +getCookie("maxQuestions")+ ' questões neste teste');
+    button.setAttribute('title', 'você só pode adicionar ' +maxQuestions+ ' questões neste teste');
 
     return;
   }
@@ -119,7 +137,6 @@ window.onload = function(){
       e.preventDefault();
       
       createQuestion();
-      return true;
     });
 
     createQuestion();
