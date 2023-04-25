@@ -56,24 +56,23 @@ router.post('/login', function(req, res){
   const users = JSON.parse(fs.readFileSync('./src/data/user.json', {encoding: "utf-8"}));
   const {email, password} = req.body;
   const login = {email, password};
-  const errors = [];
+  const errors = {
+    type: 'error',
+    messages: []
+  };
 
   if(users.filter(user => user.email === login.email).length === 0){
-    errors.push({
-      text: 'Usuário não encontrado'
-    });
+    errors.messages.push({text: 'Usuário não encontrado'});
   }
 
   if(users.filter(user => user.password === login.password).length === 0){
-    errors.push({
-      text: 'Senha incorreta'
-    });
+    errors.messages.push({text: 'Senha incorreta'});
   }
   
-  if(errors.length > 0){
+  if(errors.messages.length > 0){
     res.status(400).send(errors);
   }else{
-    res.status(200).send({opa: "tudo bão"});
+    res.status(200).send();
     //res.redirect('../test');
   }
 

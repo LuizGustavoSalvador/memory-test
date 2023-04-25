@@ -1,8 +1,10 @@
-const url = 'http://localhost:3000/test/question';
-let lastId = 0;
-let questionConfig = [];
+import generatetoast from "./main.js";
+
 const maxOptions = getCookie("maxOptions");
 const maxQuestions = getCookie("maxQuestions");
+
+let lastId = 0;
+let questionConfig = [];
 
 function getCookie(cookieName) {
   let cookie = {};
@@ -43,17 +45,8 @@ async function submit() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(result),
-    }).then(response => response.json())
-    .then((response) => {
-      document.querySelector('form').reset();
-      let success = document.createElement('div');
-      success.classList.add('toast-message', 'success');
-      success.innerHTML = '<p>Perguntas cadastradas com sucesso</p>';
-      document.querySelector('.main-content').appendChild(success);
-  
-      setTimeout(() => {
-        success.remove();
-      }, 3000);
+    }).then(response => response.json()).then((response) => {
+      generatetoast(response);
     });
     
   } catch (error) {

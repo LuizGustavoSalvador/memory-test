@@ -66,7 +66,7 @@ router.get("/:slug/question", (req, res) => {
   
   question = question.replace("{{testId}}", test[0].id);
   html = html.replace("{{component}}", question);
-  html = html.replace("{{jsCustom}}", '<script src="/js/question.js"></script>')
+  html = html.replace("{{jsCustom}}", '<script type="module" src="/js/question.js"></script>')
 
   res.end(html);
 });
@@ -85,8 +85,15 @@ router.post("/question/store", (req, res) => {
     });
   
   fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), {encoding: "utf-8"});  
-
-  res.status(201).send(testData);
+  let response = {
+    type: 'success',
+    messages: [
+      {
+        text: 'Perguntas cadastradas com sucesso'
+      }
+    ]
+  }
+  res.status(201).send(response);
 });
 
 module.exports = router;
