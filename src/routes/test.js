@@ -16,6 +16,7 @@ router.get("/", (req, res) => {
     testHtml = testHtml.replace("{{name}}", test.name);
     testHtml = testHtml.replace("{{numQuestions}}", test.numQuestions);
     testHtml = testHtml.replace("{{maxOptions}}", test.maxOptions);
+    testHtml = testHtml.replace("{{slug}}", test.slug);
 
     return testHtml;
   });
@@ -58,7 +59,7 @@ router.get("/:slug/question", (req, res) => {
     res.cookie('maxQuestions', numQuestions > 0 ? numQuestions : 0);
     res.cookie('maxOptions', test[0].maxOptions);
 
-    if(numQuestions < 0){
+    if(numQuestions < 1){
       question = fs.readFileSync('././assets/templates/no-questions.html', 'utf-8');
     }
   }
@@ -79,6 +80,8 @@ router.post("/question/store", (req, res) => {
         if(t.questions === null || t.questions === "undefined" || !t.questions){
          t.questions = [];
         }
+
+        data.questions.map((q, i) => q.id = i++);
         t.questions.push(data.questions);
       }
       return t;
@@ -94,6 +97,34 @@ router.post("/question/store", (req, res) => {
     ]
   }
   res.status(201).send(response);
+});
+
+router.get("/:slug/start", (req, res) => {
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === req.params.slug);
+  
+  let performTestQuestionTemplate = fs.readFileSync('././assets/templates/perform-test-questions.html', 'utf-8');
+
+  let html = fs.readFileSync('././assets/html/index.html', 'utf-8');
+  let performTest = fs.readFileSync('././assets/html/test/perform-test.html', 'utf-8');
+
+  let questions = test[0].questions.sort(() => Math.random() - 0.5);          
+
+  let performTestQuestionHtml = questions.map((q, i) => {
+    let questionHtml = performTestQuestionTemplate.replace("{{question}}", q[i].question);
+    let options = q[i].options.map((o) => {
+      return '<div class="option"><input class="radio" type="radio" name="option'+ o.value +'" value="' + o.value +'"/><label for="option"'+ o.value +'>'+ o.text +'</label></div>';
+    });
+    
+    questionHtml = questionHtml.replace("{{options}}", options);
+    return questionHtml;
+  });
+
+  performTest = performTest.replace("{{testName}}", test[0].name);
+  performTest = performTest.replace("{{questions}}", performTestQuestionHtml)
+  html = html.replace("{{component}}", performTest);
+
+  //res.json(questions);
+  res.end(html);
 });
 
 module.exports = router;

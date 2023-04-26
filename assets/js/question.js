@@ -17,44 +17,6 @@ function getCookie(cookieName) {
   return cookie[cookieName];
 }
 
-async function submit() {
-  let result = {
-    test_id: document.querySelector("form #testId").value,
-    questions: []
-  };
-
-  for (const key in questionConfig) {
-    if (Object.hasOwnProperty.call(questionConfig, key)) {
-      const row = questionConfig[key];
-      result.questions.push({
-        question: document.getElementById(row.question).value,
-        answer: document.getElementById(row.answer).value,
-        options: row.options.map((o, i) => ({ 
-          text: document.getElementById(o.input).value,
-          value: o.value,
-        })),
-      });
-    }
-  }
-
-  try {
-    await fetch("/test/question/store", {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(result),
-    }).then(response => response.json()).then((response) => {
-      generatetoast(response);
-    });
-    
-  } catch (error) {
-    console.log(error);
-  }
-
-};
-
 function createQuestion() {
   lastId++;
 
@@ -68,6 +30,7 @@ function createQuestion() {
   }
 
   questionConfig[lastId] = {
+    id: lastId,
     question: 'question-' + lastId,
     answer: 'answerlist-' + lastId,
     options: [{ input: 'optionsquestion-' + 1 + '-' + lastId, value: String.fromCharCode('A'.charCodeAt()) }],
@@ -78,7 +41,7 @@ function createQuestion() {
   question.setAttribute('id-question', lastId);
   question.tabIndex = lastId;
 
-  let optionsHtml = '<div id="optionsquestion'+ lastId +'" class="options-question"><p>Alternativas:</p><div class="options-list"><input class="form-control" type="text"  alternative="A" id="'+questionConfig[lastId].options[0].input + '" name="option'+ lastId +'" placeholder="Alternativa A" required></div><button id="addOption'+ lastId +'" class="btn-default" type="button" onclick="createOption('+ lastId +')">Adicionar Opção</button></div>';
+  let optionsHtml = '<div id="optionsquestion'+ lastId +'" class="options-question"><p>Alternativas:</p><div class="options-list"><input class="form-control" type="text"  alternative="A" id="'+questionConfig[lastId].options[0].input + '" name="option'+ lastId +'" placeholder="Alternativa A" required></div><button id="addOption'+ lastId +'" class="btn-default" type="button" onclick="createOption('+lastId+')">Adicionar Opção</button></div>';
   let answerHtml = '<div class="answer"><p>Resposta:</p><select id="answerlist-'+ lastId +'" "name="answerlist'+ lastId +'" required><option value="A">A</option></select></div>';
 
   question.innerHTML = '<label for="question">Pergunta:</label><input id="' + questionConfig[lastId].question + '" class="form-control" type="text" name="question['+ lastId +'][question]" placeholder="Pergunta '+lastId+'" required>'+ optionsHtml + answerHtml +'</div>';
@@ -86,8 +49,7 @@ function createQuestion() {
 }
 
 function createOption(id) {
-  document.querySelector("#questionRegisterForm #addOption"+id).addEventListener('click', function(e){
-    e.preventDefault();
+  document.querySelector("#questionRegisterForm #addOption"+id).addEventListener('click', function(){
     const question = questionConfig[id];
     const size = question.options.length;
 
@@ -137,4 +99,43 @@ window.onload = function(){
   // $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
   //     e.preventDefault(); $(this).parent('div').remove(); x--;
   // })
+};
+
+async function submit() {
+  let result = {
+    test_id: document.querySelector("form #testId").value,
+    questions: []
+  };
+
+  for (const key in questionConfig) {
+    if (Object.hasOwnProperty.call(questionConfig, key)) {
+      const row = questionConfig[key];
+      result.questions.push({
+        id: row.id + 1,
+        question: document.getElementById(row.question).value,
+        answer: document.getElementById(row.answer).value,
+        options: row.options.map((o, i) => ({ 
+          text: document.getElementById(o.input).value,
+          value: o.value,
+        })),
+      });
+    }
+  }
+
+  try {
+    await fetch("/test/question/store", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(result),
+    }).then(response => response.json()).then((response) => {
+      generatetoast(response);
+    });
+    
+  } catch (error) {
+    console.log(error);
+  }
+
 };
