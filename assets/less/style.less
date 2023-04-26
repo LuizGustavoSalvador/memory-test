@@ -282,6 +282,10 @@ a {
 
 // Test
 .test-component{
+  .no-tests{
+    .FlexPower;
+    text-align: center;
+  }
   form{
     margin-bottom: calc(~"24.000px + 1.875vw");
   }
@@ -299,34 +303,43 @@ a {
       -moz-column-gap: 15px;
       column-gap: 15px;
       row-gap: 15px;
+
       .test{
         cursor: pointer;
         border-radius: 4px;
         border: 1px solid var(--blue);
         padding: 15px;
         .TransitionPadrao;
+        
         *{
           color: var(--blue);
         }
-
-        .btn-default{
-          width: fit-content;
-          color: white;
-          margin: auto;
-          margin-top: 15px;
-          margin-right: 0;
-
-          &:hover{
-            color: var(--blue);
-          }
-        }
     
-        h2{
-          margin-bottom: 10px;
+        h3{
+          margin-bottom: 20px;
         }
     
         span{
           font-weight: var(--bold);
+        }
+
+        .actions{
+          padding-top: 30px;
+          .FlexAlignCenter;
+          .FlexJustEnd;
+
+          .btn-default{
+            width: fit-content;
+            color: white;
+
+            &:not(:last-child){
+              margin-right: 10px;
+            }
+  
+            &:hover{
+              color: var(--blue);
+            }
+          }
         }
     
         &:hover{
@@ -350,6 +363,10 @@ a {
 
       p{
         padding-left: 10px;
+      }
+
+      &:not(:last-child){
+        margin-bottom: 20px;
       }
     }
     .options-list{
@@ -385,6 +402,10 @@ a {
   }
 }
 .question-component{
+  h2{
+    padding: 15px 0;
+    text-align: center;
+  }
   form{
     .question{
       border-radius: 5px;

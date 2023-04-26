@@ -256,6 +256,18 @@ a :hover {
   justify-content: flex-end;
   margin-top: 25px;
 }
+.test-component .no-tests {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  text-align: center;
+}
 .test-component form {
   margin-bottom: calc(24.000px + 1.875vw);
 }
@@ -285,21 +297,33 @@ a :hover {
 .test-component .list-test-wrapper .list-test .test * {
   color: var(--blue);
 }
-.test-component .list-test-wrapper .list-test .test .btn-default {
-  width: fit-content;
-  color: white;
-  margin: auto;
-  margin-top: 15px;
-  margin-right: 0;
-}
-.test-component .list-test-wrapper .list-test .test .btn-default:hover {
-  color: var(--blue);
-}
-.test-component .list-test-wrapper .list-test .test h2 {
-  margin-bottom: 10px;
+.test-component .list-test-wrapper .list-test .test h3 {
+  margin-bottom: 20px;
 }
 .test-component .list-test-wrapper .list-test .test span {
   font-weight: var(--bold);
+}
+.test-component .list-test-wrapper .list-test .test .actions {
+  padding-top: 30px;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+.test-component .list-test-wrapper .list-test .test .actions .btn-default {
+  width: fit-content;
+  color: white;
+}
+.test-component .list-test-wrapper .list-test .test .actions .btn-default:not(:last-child) {
+  margin-right: 10px;
+}
+.test-component .list-test-wrapper .list-test .test .actions .btn-default:hover {
+  color: var(--blue);
 }
 .test-component .list-test-wrapper .list-test .test:hover {
   background-color: var(--lightBlue);
@@ -314,6 +338,9 @@ a :hover {
 }
 .perform-test-component .form-default .question-card p {
   padding-left: 10px;
+}
+.perform-test-component .form-default .question-card:not(:last-child) {
+  margin-bottom: 20px;
 }
 .perform-test-component .form-default .options-list {
   margin-top: 10px;
@@ -355,6 +382,10 @@ a :hover {
 .no-questions-component a {
   margin-top: 20px;
   color: white;
+}
+.question-component h2 {
+  padding: 15px 0;
+  text-align: center;
 }
 .question-component form .question {
   border-radius: 5px;

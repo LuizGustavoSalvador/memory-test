@@ -21,13 +21,10 @@ router.get("/", (req, res) => {
     return testHtml;
   });
 
-  if(testHtml.length > 0){
-    testHtml = testHtml.join();
-    testHtml = testHtml.replace(',', '').replace(', ', ''). replace(' ,', '');
-  }else{
+  if(testHtml.length < 1){
     testHtml = '<h3 class="no-tests">Nenhum teste cadastrado</h3>';
   }
-  testPage = testPage.replace("{{list}}", testHtml);
+  testPage = testPage.replace("{{list}}", testHtml.join(""));
   indexHtml = indexHtml.replace("{{component}}", testPage);
 
   res.writeHead(200, {'Content-Type': 'text/html'});
@@ -65,9 +62,17 @@ router.get("/:slug/question", (req, res) => {
   }
 
   
+  question = question.replace("{{testName}}", test[0].name);
   question = question.replace("{{testId}}", test[0].id);
   html = html.replace("{{component}}", question);
-  html = html.replace("{{jsCustom}}", '<script type="module" src="/js/question.js"></script>')
+  // html = html.replace("{{jsCustom}}", '<script type="module" src="/js/question.js"></script>');
+  html = html.replace("{{jsCustom}}", `
+    <script type="module">
+      import { QuestionPage } from "/js/question.js";
+      window.questionPage = new QuestionPage();
+    </script>
+  `);
+
 
   res.end(html);
 });
@@ -77,12 +82,8 @@ router.post("/question/store", (req, res) => {
   let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   let testData = testFile.map((t) => {
       if(data.test_id === t.id){
-        if(t.questions === null || t.questions === "undefined" || !t.questions){
-         t.questions = [];
-        }
-
         data.questions.map((q, i) => q.id = i++);
-        t.questions.push(data.questions);
+        t.questions = data.questions;
       }
       return t;
     });
@@ -110,20 +111,20 @@ router.get("/:slug/start", (req, res) => {
   let questions = test[0].questions.sort(() => Math.random() - 0.5);          
 
   let performTestQuestionHtml = questions.map((q, i) => {
-    let questionHtml = performTestQuestionTemplate.replace("{{question}}", q[i].question);
-    let options = q[i].options.map((o) => {
-      return '<div class="option"><input class="radio" type="radio" name="option'+ o.value +'" value="' + o.value +'"/><label for="option"'+ o.value +'>'+ o.text +'</label></div>';
+    let questionHtml = performTestQuestionTemplate.replace("{{numQuestion}}", i + 1);
+    questionHtml = questionHtml.replace("{{question}}", q.question);
+    let options = q.options.map((o) => {
+      return '<div class="option"><input class="radio" type="radio" name="optionQustion'+ q.id +'" value="' + o.value +'"/><label for="option"'+ o.value +'>'+ o.text +'</label></div>';
     });
     
-    questionHtml = questionHtml.replace("{{options}}", options);
+    questionHtml = questionHtml.replace("{{options}}", options.join(""));
     return questionHtml;
   });
 
   performTest = performTest.replace("{{testName}}", test[0].name);
-  performTest = performTest.replace("{{questions}}", performTestQuestionHtml)
+  performTest = performTest.replace("{{questions}}", performTestQuestionHtml.join(""))
   html = html.replace("{{component}}", performTest);
 
-  //res.json(questions);
   res.end(html);
 });
 

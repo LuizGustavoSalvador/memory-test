@@ -1,59 +1,81 @@
 import generatetoast from "./main.js";
 
-const maxOptions = getCookie("maxOptions");
-const maxQuestions = getCookie("maxQuestions");
+export class QuestionPage {
+  maxOptions = 0;
+  maxQuestions = 0;
+  lastId = 0;
+  questionConfig = [];
 
-let lastId = 0;
-let questionConfig = [];
+  constructor() {
+    this.maxOptions = +this.getCookie("maxOptions");
+    this.maxQuestions = +this.getCookie("maxQuestions");
 
-function getCookie(cookieName) {
-  let cookie = {};
+    document.querySelector("#questionRegisterForm #sendButton").addEventListener('click', (e) => {
+      e.preventDefault();
+      this.submit();
+    });
 
-  document.cookie.split(';').forEach(function(el) {
-    let [key,value] = el.split('=');
-    cookie[key.trim()] = value;
-  })
+    window.onload = () => {
+      document.querySelector("#questionRegisterForm #addQuestion").addEventListener('click', (e) => {
+        e.preventDefault();
+        this.createQuestion();
+      });
 
-  return cookie[cookieName];
-}
+      this.createQuestion();
 
-function createQuestion() {
-  lastId++;
-
-  if (lastId > maxQuestions) {
-    let button = document.getElementById('addQuestion');
-    button.disabled = true;
-    button.classList.add('disabled-button');
-    button.setAttribute('title', 'você só pode adicionar ' +maxQuestions+ ' questões neste teste');
-
-    return;
+      // $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+      //     e.preventDefault(); $(this).parent('div').remove(); x--;
+      // })
+    };
   }
 
-  questionConfig[lastId] = {
-    id: lastId,
-    question: 'question-' + lastId,
-    answer: 'answerlist-' + lastId,
-    options: [{ input: 'optionsquestion-' + 1 + '-' + lastId, value: String.fromCharCode('A'.charCodeAt()) }],
-  };
+  getCookie(cookieName) {
+    let cookie = {};
 
-  let question = document.createElement('div');
-  question.classList.add('question');
-  question.setAttribute('id-question', lastId);
-  question.tabIndex = lastId;
+    document.cookie.split(';').forEach((el) => {
+      let [key, value] = el.split('=');
+      cookie[key.trim()] = value;
+    })
 
-  let optionsHtml = '<div id="optionsquestion'+ lastId +'" class="options-question"><p>Alternativas:</p><div class="options-list"><input class="form-control" type="text"  alternative="A" id="'+questionConfig[lastId].options[0].input + '" name="option'+ lastId +'" placeholder="Alternativa A" required></div><button id="addOption'+ lastId +'" class="btn-default" type="button" onclick="createOption('+lastId+')">Adicionar Opção</button></div>';
-  let answerHtml = '<div class="answer"><p>Resposta:</p><select id="answerlist-'+ lastId +'" "name="answerlist'+ lastId +'" required><option value="A">A</option></select></div>';
+    return cookie[cookieName];
+  }
 
-  question.innerHTML = '<label for="question">Pergunta:</label><input id="' + questionConfig[lastId].question + '" class="form-control" type="text" name="question['+ lastId +'][question]" placeholder="Pergunta '+lastId+'" required>'+ optionsHtml + answerHtml +'</div>';
-  document.querySelector("#questionRegisterForm .questions-list-fields").appendChild(question);
-}
+  createQuestion() {
+    this.lastId++;
 
-function createOption(id) {
-  document.querySelector("#questionRegisterForm #addOption"+id).addEventListener('click', function(){
-    const question = questionConfig[id];
+    if (this.lastId > this.maxQuestions) {
+      let button = document.getElementById('addQuestion');
+      button.disabled = true;
+      button.classList.add('disabled-button');
+      button.setAttribute('title', 'você só pode adicionar ' + this.maxQuestions + ' questões neste teste');
+
+      return;
+    }
+
+    this.questionConfig[this.lastId] = {
+      id: this.lastId,
+      question: 'question-' + this.lastId,
+      answer: 'answerlist-' + this.lastId,
+      options: [{ input: 'optionsquestion-' + 1 + '-' + this.lastId, value: String.fromCharCode('A'.charCodeAt()) }],
+    };
+
+    let question = document.createElement('div');
+    question.classList.add('question');
+    question.setAttribute('id-question', this.lastId);
+    question.tabIndex = this.lastId;
+
+    let optionsHtml = '<div id="optionsquestion' + this.lastId + '" class="options-question"><p>Alternativas:</p><div class="options-list"><input class="form-control" type="text"  alternative="A" id="' + this.questionConfig[this.lastId].options[0].input + '" name="option' + this.lastId + '" placeholder="Alternativa A" required></div><button id="addOption' + this.lastId + '" class="btn-default" type="button" onclick="questionPage.createOption(' + this.lastId + ')">Adicionar opção</button></div>';
+    let answerHtml = '<div class="answer"><p>Resposta:</p><select id="answerlist-' + this.lastId + '" "name="answerlist' + this.lastId + '" required><option value="A">A</option></select></div>';
+
+    question.innerHTML = '<label for="question">Pergunta:</label><input id="' + this.questionConfig[this.lastId].question + '" class="form-control" type="text" name="question[' + this.lastId + '][question]" placeholder="Pergunta ' + this.lastId + '" required>' + optionsHtml + answerHtml + '</div>';
+    document.querySelector("#questionRegisterForm .questions-list-fields").appendChild(question);
+  }
+
+  createOption(id) {
+    const question = this.questionConfig[id];
     const size = question.options.length;
 
-    if (size >= maxOptions) {
+    if (size >= this.maxOptions) {
       return;
     }
 
@@ -71,71 +93,51 @@ function createOption(id) {
     let answer = document.createElement('option');
     answer.setAttribute('value', newOption.value);
     answer.innerText = newOption.value;
-    document.querySelector("#answerlist-"+lastId).appendChild(answer);
-
-    if (question.options.length >= maxOptions) {
-      this.disabled = true;
-      this.classList.add('disabled-button');
-      this.title = 'Você só pode adicionar '+getCookie("maxOptions")+' opções nesta questão';
+    document.querySelector("#answerlist-" + this.lastId).appendChild(answer);
+console.log(question.options, this.maxOptions);
+    if (question.options.length >= this.maxOptions) {
+      let button = document.querySelector("form #addOption"+this.lastId);
+      button.setAttribute('disabled', true);
+      button.classList.add('disabled-button');
+      button.setAttribute('title', 'Você só pode adicionar ' + this.getCookie("maxOptions") + ' opções nesta questão');
     }
-  });
-}
+  }
 
-document.querySelector("#questionRegisterForm #sendButton").addEventListener('click', function(e){
-    e.preventDefault();
+  async submit() {
+    let result = {
+      test_id: document.querySelector("form #testId").value,
+      questions: []
+    };
 
-    submit();
-});
+    for (const key in this.questionConfig) {
+      if (Object.hasOwnProperty.call(this.questionConfig, key)) {
+        const row = this.questionConfig[key];
+        result.questions.push({
+          id: row.id + 1,
+          question: document.getElementById(row.question).value,
+          answer: document.getElementById(row.answer).value,
+          options: row.options.map((o, i) => ({
+            text: document.getElementById(o.input).value,
+            value: o.value,
+          })),
+        });
+      }
+    }
 
-window.onload = function(){
-    document.querySelector("#questionRegisterForm #addQuestion").addEventListener('click', function(e){
-      e.preventDefault();
-      
-      createQuestion();
-    });
-
-    createQuestion();
-
-  // $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-  //     e.preventDefault(); $(this).parent('div').remove(); x--;
-  // })
-};
-
-async function submit() {
-  let result = {
-    test_id: document.querySelector("form #testId").value,
-    questions: []
-  };
-
-  for (const key in questionConfig) {
-    if (Object.hasOwnProperty.call(questionConfig, key)) {
-      const row = questionConfig[key];
-      result.questions.push({
-        id: row.id + 1,
-        question: document.getElementById(row.question).value,
-        answer: document.getElementById(row.answer).value,
-        options: row.options.map((o, i) => ({ 
-          text: document.getElementById(o.input).value,
-          value: o.value,
-        })),
+    try {
+      await fetch("/test/question/store", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(result),
+      }).then(response => response.json()).then((response) => {
+        generatetoast(response);
       });
+
+    } catch (error) {
+      console.log(error);
     }
   }
-
-  try {
-    await fetch("/test/question/store", {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(result),
-    }).then(response => response.json()).then((response) => {
-      generatetoast(response);
-    });
-    
-  } catch (error) {
-    console.log(error);
-  }
-
-};
+}
