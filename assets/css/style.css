@@ -286,7 +286,6 @@ a :hover {
   row-gap: 15px;
 }
 .test-component .list-test-wrapper .list-test .test {
-  cursor: pointer;
   border-radius: 4px;
   border: 1px solid var(--blue);
   padding: 15px;
