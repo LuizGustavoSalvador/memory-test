@@ -1,12 +1,12 @@
-import {generatetoast, getCookie} from "./main.js";
+import { generatetoast, getCookie } from "./main.js";
 
 export class PerformTestPage {
   lastId = 0;
   answersConfig = [];
-  stepLimit = 0; 
+  stepLimit = 0;
 
   constructor() {
-    this.stepLimit = getCookie("stepLimit");
+    this.stepLimit = +getCookie("stepLimit");
 
     document.querySelector("#performTestForm #sendButton").addEventListener('click', (e) => {
       this.submit();
@@ -15,104 +15,101 @@ export class PerformTestPage {
     window.onload = () => {
       document.querySelector("#performTestForm #prevQuestion").addEventListener('click', (e) => {
         e.preventDefault();
+
         this.prevQuestion();
       });
 
-      this.prevQuestion();
+      this.updateButtons();
 
       document.querySelector("#performTestForm #nextQuestion").addEventListener('click', (e) => {
         e.preventDefault();
+
         this.nextQuestion();
       });
     };
   }
 
-  prevQuestion(){
+  prevQuestion() {
     let prevId = this.lastId;
+    let prevStep = 'step-' + (prevId - 1);
+    let nextStep = 'step-' + prevId;
 
-    this.lastId = prevId === 0 ? prevId : this.lastId--;
-    console.log('prev: ' + this.lastId);
- 
-    if (this.lastId === 0) {
-      let prev = document.querySelector('#performTestForm #prevQuestion');
-      prev.setAttribute('disable', true);
-      prev.classList.add('disabled-button');
-      prev.setAttribute('title', 'você está na primeira questão');
-
-      return;
-    }
-
-    if (this.lastId < +this.stepLimit) {
-      let next = document.querySelector('#performTestForm #nextQuestion');
-      next.setAttribute('disable', false);
-      next.classList.remove('disabled-button');
-      next.removeAttribute('title');
-    }
+    this.lastId--;
     
-    this.answersConfig[this.lastId] = {
-      prevStep: 'step-' + prevId,
-      nextStep: 'step-' + this.lastId,
-      question: 'question-' + this.lastId,
-      optionSelected: 'optionQustion-' + this.lastId,
-    };
+    document.getElementById(prevStep).classList.remove('hide');
+    document.querySelector("#" + prevStep + " input").setAttribute('disabled', false);
 
-    let currentStep = this.answersConfig[this.lastId].prevStep;
-    console.log(currentStep);
-    document.getElementById(currentStep).classList.remove('hide');
-    document.querySelector("#" + currentStep + " input").setAttribute('disable', false);
-
-    let nextStep = this.answersConfig[this.lastId].nextStep;
     document.getElementById(nextStep).classList.add('hide');
-    document.querySelector("#" + nextStep + " input").setAttribute('disable', true);
+    document.querySelector("#" + nextStep + " input").setAttribute('disabled', true);
+
+    this.updateButtons();
   }
 
-  nextQuestion(){
-    let currentId = this.lastId;
+  nextQuestion() {
+    let prevStep = 'step-' + this.lastId;
+    let nextStep = 'step-' + (this.lastId + 1);
+    this.lastId++;
 
-    this.lastI = this.stepLimit === currentId ? currentId : this.lastId++;
-
-    console.log('next: ' + this.lastId);
-
-    if (this.lastId === +this.stepLimit) {
-      let prev = document.querySelector('#performTestForm #nextQuestion');
-      prev.setAttribute('disable', true);
-      prev.classList.add('disabled-button');
-      prev.setAttribute('title', 'você está na última questão');
-
-      return;
-    }
-
-    if (this.lastId > 0) {
-      let next = document.querySelector('#performTestForm #prevQuestion');
-      next.setAttribute('disable', false);
-      next.classList.remove('disabled-button');
-      next.removeAttribute('title');
-    }
-   
     this.answersConfig[this.lastId] = {
-      prevStep: 'step-' + currentId,
-      nextStep: 'step-' + this.lastId,
       question: 'question-' + this.lastId,
       optionSelected: 'optionQustion-' + this.lastId,
     };
+  
+    document.getElementById(prevStep).classList.add('hide');
+    document.querySelector("#" + prevStep + " input").setAttribute('disabled', true);
 
-    let currentStep = this.answersConfig[this.lastId].prevStep;
-    document.getElementById(currentStep).classList.add('hide');
-    document.querySelector("#" + currentStep + " input").setAttribute('disable', true);
-
-    let nextStep = this.answersConfig[this.lastId].nextStep;
     document.getElementById(nextStep).classList.remove('hide');
-    document.querySelector("#" + nextStep + " input").setAttribute('disable', false);
+    document.querySelector("#" + nextStep + " input").setAttribute('disabled', false);
+
+    this.updateButtons();
+  }
+
+  updateButtons() {
+    if (this.lastId <= 0) {
+      let prev = document.querySelector('#performTestForm #prevQuestion');
+      prev.disabled = true;
+      prev.classList.add('disabled-button');
+      prev.setAttribute('title', 'Você está na primeira questão');
+    } else {
+      let prev = document.querySelector('#performTestForm #prevQuestion');
+      prev.disabled = false;
+      prev.classList.remove('disabled-button');
+      prev.removeAttribute('title');
+    }
+
+    if (this.lastId >= (this.stepLimit - 1)) {
+      console.log(this.lastId);
+      let next = document.querySelector('#performTestForm #nextQuestion');
+      next.disabled = true;
+      next.classList.add('disabled-button');
+      next.setAttribute('title', 'Você está na última questão');
+    } else {
+      let next = document.querySelector('#performTestForm #nextQuestion');
+      next.disabled = false;
+      next.classList.remove('disabled-button');
+      next.removeAttribute('title');
+    }
   }
 
   async submit() {
 
-   // const formTest = document.querySelector("#testRegisterForm");
-    // const data = {
-    //   name: formTest.querySelector('#name').value,
-    //   numQuestions: formTest.querySelector('#numQuestions').value,
-    //   maxOptions: formTest.querySelector('#maxOptions').value,
-    // };
+    let data = {
+      test_id: document.querySelector("form #testId").value,
+      questions: []
+    };
+
+    for (const key in this.answersConfig) {
+      if (Object.hasOwnProperty.call(this.answersConfig, key)) {
+        const row = this.answersConfig[key];
+        const options = document.getElementsByName(row.optionSelected);
+        let optionValue = Array.from(options).find((o) => o.checked);
+        
+        data.questions.push({
+          question: 'fdfs',
+          optionSelected: optionValue
+        });
+      }
+    }
 
     try {
       await fetch("/test/attempt", {
@@ -123,9 +120,9 @@ export class PerformTestPage {
         },
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
-        generatetoast(response);
-        
-        formTest.reset();
+        // generatetoast(response);
+        console.log(response);
+        // formTest.reset();
 
       });
 

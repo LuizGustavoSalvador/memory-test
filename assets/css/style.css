@@ -359,6 +359,9 @@ a :hover {
   -ms-flex-align: center;
   align-items: center;
 }
+.perform-test-component .form-default .options-list .option:not(:last-child) {
+  padding-bottom: 10px;
+}
 .perform-test-component .form-default .options-list label {
   display: block;
 }

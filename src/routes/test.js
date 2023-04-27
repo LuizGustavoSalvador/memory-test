@@ -21,9 +21,9 @@ router.get("/", (req, res) => {
     return testHtml;
   });
 
-  if(testHtml.length < 1){
+  if (testHtml.length < 1) {
     testHtml = '<h3 class="no-tests">Nenhum teste cadastrado</h3>';
-  }else{
+  } else {
     testHtml = '<div class="list-test">' + testHtml.join("") + '</div>';
   }
 
@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
   </script>
 `);
 
-  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.writeHead(200, { 'Content-Type': 'text/html' });
   res.end(indexHtml);
 });
 
@@ -50,24 +50,24 @@ router.post("/store", (req, res) => {
     messages: []
   };
 
-  if(tests.filter(t => t.name === data.name).length > 0){
-    errors.messages.push({text: 'Já existe um teste cadastrado com este nome'});
+  if (tests.filter(t => t.name === data.name).length > 0) {
+    errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
 
-  if(data.numQuestions > 10 || data.numQuestions < 1){
-    errors.messages.push({text: 'A quantidade de questões deve ser entre 1 e 10'});
+  if (data.numQuestions > 10 || data.numQuestions < 1) {
+    errors.messages.push({ text: 'A quantidade de questões deve ser entre 1 e 10' });
   }
 
-  if(data.maxOptions > 5 || data.maxOptions < 2){
-    errors.messages.push({text: 'A quantidade de opções por questão deve ser entre 2 e 5'});
+  if (data.maxOptions > 5 || data.maxOptions < 2) {
+    errors.messages.push({ text: 'A quantidade de opções por questão deve ser entre 2 e 5' });
   }
- 
-  if(errors.messages.length > 0){
+
+  if (errors.messages.length > 0) {
     res.status(400).send(errors);
-  }else{
+  } else {
     tests.push(data);
 
-    fs.writeFileSync("./src/data/test.json", JSON.stringify(tests), {encoding: "utf-8"});
+    fs.writeFileSync("./src/data/test.json", JSON.stringify(tests), { encoding: "utf-8" });
 
     let response = {
       type: 'success',
@@ -84,22 +84,22 @@ router.post("/store", (req, res) => {
 
 router.get("/:slug/question", (req, res) => {
   let slug = req.params.slug;
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === slug); 
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === slug);
   let html = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let question = fs.readFileSync('././assets/html/question/question.html', 'utf-8');
 
-  if(test.length === 1){
+  if (test.length === 1) {
     let questions = test[0].questions ? test[0].questions.length : 0;
     let numQuestions = test[0].numQuestions - questions;
     res.cookie('maxQuestions', numQuestions > 0 ? numQuestions : 0);
     res.cookie('maxOptions', test[0].maxOptions);
 
-    if(numQuestions < 1){
+    if (numQuestions < 1) {
       question = fs.readFileSync('././assets/html/question/limit-question.html', 'utf-8');
     }
   }
 
-  
+
   question = question.replace("{{testName}}", test[0].name);
   question = question.replace("{{testId}}", test[0].id);
   html = html.replace("{{component}}", question);
@@ -118,14 +118,14 @@ router.post("/question/store", (req, res) => {
   let data = req.body;
   let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   let testData = testFile.map((t) => {
-      if(data.test_id === t.id){
-        data.questions.map((q, i) => q.id = i++);
-        t.questions = data.questions;
-      }
-      return t;
-    });
-  
-  fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), {encoding: "utf-8"});  
+    if (data.test_id === t.id) {
+      data.questions.map((q, i) => q.id = i++);
+      t.questions = data.questions;
+    }
+    return t;
+  });
+
+  fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), { encoding: "utf-8" });
 
   let response = {
     type: 'success',
@@ -140,13 +140,13 @@ router.post("/question/store", (req, res) => {
 
 router.get("/:slug/start", (req, res) => {
   let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === req.params.slug);
-  
+
   let performTestQuestionTemplate = fs.readFileSync('././assets/templates/perform-test-questions.html', 'utf-8');
 
   let indexHtml = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let performTest = fs.readFileSync('././assets/html/test/perform-test.html', 'utf-8');
 
-  if(test[0].questions){
+  if (test[0].questions) {
     let questions = test[0].questions.sort(() => Math.random() - 0.5);
 
     let performTestQuestionHtml = questions.map((q, i) => {
@@ -156,18 +156,19 @@ router.get("/:slug/start", (req, res) => {
       questionHtml = questionHtml.replace("{{question}}", q.question);
       questionHtml = questionHtml.replace("{{idQuestion}}", q.id);
       let options = q.options.map((o) => {
-        return '<div class="option"><input class="radio" type="radio" name="optionQustion-'+ q.id +'" value="' + o.value +'"/><label for="option"'+ o.value +'>'+ o.text +'</label></div>';
+        return '<div class="option"><input class="radio" type="radio" name="optionQustion-' + q.id + '" value="' + o.value + '"/><label for="option"' + o.value + '>' + o.text + '</label></div>';
       });
-      
+
       questionHtml = questionHtml.replace("{{options}}", options.join(""));
       return questionHtml;
     });
-  
+
     performTest = performTest.replace("{{testName}}", test[0].name);
+    performTest = performTest.replace("{{testId}}", test[0].id);
     performTest = performTest.replace("{{questions}}", performTestQuestionHtml.join(""));
 
     res.cookie("stepLimit", questions.length);
-  }else{
+  } else {
     performTest = fs.readFileSync('././assets/html/question/no-question.html', 'utf-8');
     performTest = performTest.replace("{{test}}", test[0].name);
     performTest = performTest.replace("{{slug}}", test[0].slug);
@@ -186,9 +187,23 @@ router.get("/:slug/start", (req, res) => {
 
 router.post("/attempt", (req, res) => {
   let data = req.body;
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(t => t.id === data.idTest);
-  let results = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8')); 
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(t => t.id === data.test_id);
+  let results = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8'));
   data.test_name = test[0].name;
+  let errors = {
+    type: 'error',
+    messages: []
+  };
+
+  if(data.questions.length < 0){
+    errors.messages.push({text: 'É obrigatório responder pelo menos 1 questão'});
+  }
+  res.send(data);
+  // if(errors.messages.length > 0){
+  //   res.status(400).send(errors.json());
+  // }else{
+  //   res.status(200).end(data);
+  // }
 
 });
 
