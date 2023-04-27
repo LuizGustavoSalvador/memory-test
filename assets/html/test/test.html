@@ -1,26 +1,24 @@
 <div class="test-component">
   <h1 class="title-page">Teste</h1>
-  <form action="/test/store" method="POST" id="testRegisterForm" class="form-default">
+  <form id="testRegisterForm" class="form-default">
     <div>
       <label for="name">Nome:</label>
       <input class="form-control" type="text" id="name" name="name" placeholder="Nome" required>
     </div>
     <div>
       <label for="numQuestions">Quantidade de questões:</label>
-      <input class="form-control" id="numQuestions" name="numQuestions" placeholder="Quantidade de questões" type="number" min="1" max="20" required>
+      <input class="form-control" id="numQuestions" name="numQuestions" placeholder="Quantidade de questões" type="number" min=1 max=10 required>
     </div>
     <div>
       <label for="maxOptions">Quantidade máxima de alternativas por questão:</label>
-      <input class="form-control" id="maxOptions" name="maxOptions" placeholder="Quantidade máxima de alternativas por questão" type="number" min="1" max="10" required>
+      <input class="form-control" id="maxOptions" name="maxOptions" placeholder="Quantidade máxima de alternativas por questão" type="number" min=2 max=5 required>
     </div>
     <div class="button">
-      <button class="btn-default" type="submit">Criar teste</button>
+      <button class="btn-default" id="sendButton" type="submit">Criar teste</button>
     </div>
   </form>
   <div class="list-test-wrapper">
     <h2 class="page-subtitle">Lista de testes</h2>
-    <div class="list-test">
-      {{list}}
-    </div>
+    {{list}}
   </div>
 </div>

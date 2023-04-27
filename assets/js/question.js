@@ -1,4 +1,4 @@
-import generatetoast from "./main.js";
+import {generatetoast, getCookie} from "./main.js";
 
 export class QuestionPage {
   maxOptions = 0;
@@ -7,8 +7,8 @@ export class QuestionPage {
   questionConfig = [];
 
   constructor() {
-    this.maxOptions = +this.getCookie("maxOptions");
-    this.maxQuestions = +this.getCookie("maxQuestions");
+    this.maxOptions = +getCookie("maxOptions");
+    this.maxQuestions = +getCookie("maxQuestions");
 
     document.querySelector("#questionRegisterForm #sendButton").addEventListener('click', (e) => {
       e.preventDefault();
@@ -27,17 +27,6 @@ export class QuestionPage {
       //     e.preventDefault(); $(this).parent('div').remove(); x--;
       // })
     };
-  }
-
-  getCookie(cookieName) {
-    let cookie = {};
-
-    document.cookie.split(';').forEach((el) => {
-      let [key, value] = el.split('=');
-      cookie[key.trim()] = value;
-    })
-
-    return cookie[cookieName];
   }
 
   createQuestion() {
@@ -99,7 +88,7 @@ console.log(question.options, this.maxOptions);
       let button = document.querySelector("form #addOption"+this.lastId);
       button.setAttribute('disabled', true);
       button.classList.add('disabled-button');
-      button.setAttribute('title', 'Você só pode adicionar ' + this.getCookie("maxOptions") + ' opções nesta questão');
+      button.setAttribute('title', 'Você só pode adicionar ' + getCookie("maxOptions") + ' opções nesta questão');
     }
   }
 

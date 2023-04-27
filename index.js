@@ -1,5 +1,6 @@
 const express = require('express');
 const routes = require('./src/routes/route');
+const result = require('./src/routes/result');
 const test = require('./src/routes/test');
 const user = require('./src/routes/user');
 const fs = require('fs');
@@ -15,9 +16,11 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
+app.use('/result', result);
 app.use('/test', test);
 app.use('/user', user);
-app.use(function(req,res){
+
+app.use((req,res) => {
   let html = fs.readFileSync('././assets/html/index.html');
   let error404 = fs.readFileSync('././assets/html/404.html');
   html = html.toString().replace('{{component}}', error404);

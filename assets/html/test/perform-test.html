@@ -1,12 +1,12 @@
 <div class="perform-test-component">
   <h1 class="title-page">Teste: {{testName}}</h1>
-  <form method="POST" id="testRegisterForm" class="form-default">
+  <form method="POST" id="performTestForm" class="form-default">
     <input type="hidden" name="test_id" value="{{testId}}" />
     {{questions}}
     <div class="button">
-      <button id="prevQuestion" class="btn-default" type="submit">Anterior</button>
-      <button id="stopTest" class="btn-default" type="button">Finalizar teste</button>
-      <button id="nexQuestion" class="btn-default" type="submit">Próxima</button>
+      <button id="prevQuestion" class="btn-default" type="button">Anterior</button>
+      <button id="sendButton" class="btn-default" type="button">Finalizar teste</button>
+      <button id="nextQuestion" class="btn-default" type="button">Próxima</button>
     </div>
   </form>
 </div>

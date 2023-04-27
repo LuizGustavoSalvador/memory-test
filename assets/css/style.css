@@ -103,6 +103,7 @@ a :hover {
 .btn-default {
   display: block;
   position: relative;
+  text-align: center;
   cursor: pointer;
   font-size: calc(15.600px + 0.125vw);
   color: white;
@@ -267,6 +268,7 @@ a :hover {
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
+  margin-top: 50px;
 }
 .test-component form {
   margin-bottom: calc(24.000px + 1.875vw);
@@ -328,6 +330,7 @@ a :hover {
   background-color: var(--lightBlue);
 }
 .perform-test-component .form-default .question-card {
+  display: block;
   padding: 15px;
   border-radius: 4px;
   border: 1px solid var(--blue);
@@ -337,6 +340,9 @@ a :hover {
 }
 .perform-test-component .form-default .question-card p {
   padding-left: 10px;
+}
+.perform-test-component .form-default .question-card.hide {
+  display: none;
 }
 .perform-test-component .form-default .question-card:not(:last-child) {
   margin-bottom: 20px;
@@ -360,10 +366,7 @@ a :hover {
   justify-content: space-between;
 }
 .no-questions-component {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  height: 80vh;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -378,9 +381,26 @@ a :hover {
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.no-questions-component a {
-  margin-top: 20px;
+.no-questions-component .actions {
+  padding-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+.no-questions-component .actions .btn-default {
   color: white;
+}
+.no-questions-component .actions .btn-default:not(:last-child) {
+  margin-right: 10px;
+}
+.no-questions-component .actions .btn-default:hover {
+  color: var(--blue);
 }
 .question-component h2 {
   padding: 15px 0;
@@ -401,6 +421,97 @@ a :hover {
 }
 .question-component .options-list {
   padding: 15px 0 0 15px;
+}
+.result-list-component .page-title {
+  margin-bottom: 50px;
+}
+.result-list-component .list-result {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 15px 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  -webkit-column-gap: 15px;
+  -moz-column-gap: 15px;
+  column-gap: 15px;
+  row-gap: 15px;
+}
+.result-list-component .list-result .result {
+  border-radius: 4px;
+  border: 1px solid var(--blue);
+  padding: 15px;
+  -webkit-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+}
+.result-list-component .list-result .result * {
+  color: var(--blue);
+}
+.result-list-component .list-result .result h3 {
+  margin-bottom: 20px;
+}
+.result-list-component .list-result .result span {
+  font-weight: var(--bold);
+}
+.result-list-component .list-result .result .actions {
+  padding-top: 30px;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+.result-list-component .list-result .result .actions .btn-default {
+  width: fit-content;
+  color: white;
+}
+.result-list-component .list-result .result .actions .btn-default:not(:last-child) {
+  margin-right: 10px;
+}
+.result-list-component .list-result .result .actions .btn-default:hover {
+  color: var(--blue);
+}
+.result-list-component .list-result .result:hover {
+  background-color: var(--lightBlue);
+}
+.result-details-component {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.result-details-component .page-title {
+  margin-bottom: 50px;
+}
+.result-details-component .details {
+  max-width: 700px;
+  width: 100%;
+  margin: auto;
+  border: 1px solid var(--blue);
+  border-radius: 4px;
+  padding: 15px;
+}
+.result-details-component .details h3 {
+  padding-bottom: 20px;
+}
+.result-details-component .btn-default {
+  margin-top: 20px;
+  color: white;
+}
+.result-details-component .btn-default:hover {
+  color: var(--blue);
 }
 .footer-grid {
   background-color: var(--blue);

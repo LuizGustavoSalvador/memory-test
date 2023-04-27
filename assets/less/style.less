@@ -114,6 +114,7 @@ a {
 .btn-default{
   display: block;
   position: relative;
+  text-align: center;
   cursor: pointer;
   font-size: calc(~"15.600px + 0.125vw");
   color: white;
@@ -285,6 +286,7 @@ a {
   .no-tests{
     .FlexPower;
     text-align: center;
+    margin-top: 50px;
   }
   form{
     margin-bottom: calc(~"24.000px + 1.875vw");
@@ -353,6 +355,7 @@ a {
 .perform-test-component{
   .form-default{
     .question-card{
+      display: block;
       padding: 15px;
       border-radius: 4px;
       border: 1px solid var(--blue);
@@ -362,6 +365,10 @@ a {
 
       p{
         padding-left: 10px;
+      }
+
+      &.hide{
+        display: none;
       }
 
       &:not(:last-child){
@@ -388,16 +395,26 @@ a {
 
 // Questions
 .no-questions-component{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  height: 80vh;
   .FlexPower;
   .FlexColumn;
 
-  a{
-    margin-top: 20px;
-    color: white;
+  .actions{
+    padding-top: 20px;
+    .FlexPower;
+
+
+    .btn-default{
+      color: white;
+
+      &:not(:last-child){
+        margin-right: 10px;
+      }
+
+      &:hover{
+        color: var(--blue);
+      }
+    }
   }
 }
 .question-component{
@@ -426,6 +443,100 @@ a {
     padding: 15px 0 0 15px;
   }
 }
+
+// Results
+.result-list-component{
+  .page-title{
+    margin-bottom: 50px;
+  }
+
+  .list-result{
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr 15px 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    -webkit-column-gap: 15px;
+    -moz-column-gap: 15px;
+    column-gap: 15px;
+    row-gap: 15px;
+
+    .result{
+      border-radius: 4px;
+      border: 1px solid var(--blue);
+      padding: 15px;
+      .TransitionPadrao;
+      
+      *{
+        color: var(--blue);
+      }
+  
+      h3{
+        margin-bottom: 20px;
+      }
+  
+      span{
+        font-weight: var(--bold);
+      }
+
+      .actions{
+        padding-top: 30px;
+        .FlexAlignCenter;
+        .FlexJustEnd;
+
+        .btn-default{
+          width: fit-content;
+          color: white;
+
+          &:not(:last-child){
+            margin-right: 10px;
+          }
+
+          &:hover{
+            color: var(--blue);
+          }
+        }
+      }
+
+  
+      &:hover{
+        background-color: var(--lightBlue);
+      }
+    }
+  }
+}
+
+.result-details-component{
+  .FlexPower;
+  .FlexColumn;
+
+  .page-title{
+    margin-bottom: 50px;
+  }
+
+  .details{
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+    border: 1px solid var(--blue);
+    border-radius: 4px;
+    padding: 15px;
+
+    h3{
+      padding-bottom: 20px;
+    }
+  }
+
+  .btn-default{
+    margin-top: 20px;
+    color: white;
+
+    &:hover{
+      color: var(--blue);
+    }
+  }
+}
+
+
 
 // Footer
 .footer-grid{

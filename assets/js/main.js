@@ -1,4 +1,4 @@
-export default function generatetoast(params){
+export function generatetoast(params){
     let toast = document.createElement('div');
     toast.classList.add('toast-message', params.type);
 
@@ -15,3 +15,14 @@ export default function generatetoast(params){
         toast.remove();
     }, 3000);
 };
+
+export function getCookie(cookieName) {
+    let cookie = {};
+
+    document.cookie.split(';').forEach((el) => {
+      let [key, value] = el.split('=');
+      cookie[key.trim()] = value;
+    })
+
+    return cookie[cookieName];
+  }
