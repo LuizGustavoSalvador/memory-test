@@ -1,8 +1,10 @@
 :root {
   --blue: #0b0f35;
   --lightBlue: #cee9ff;
-  --green: #43b428;
-  --red: #ff5353;
+  --correctGreen: #43b428;
+  --correctGreenBackground: #d0ffc5;
+  --errorRed: #ff5353;
+  --errorRedBackground: #ffb0b0;
   --gray: #b3b3b3;
 
   --light: 300;
@@ -97,6 +99,12 @@ h3{
   font-size: calc(~"19.000px + 0.313vw");
 }
 
+h4{
+  font-size: calc(~"17.200px + 0.250vw");
+  font-weight: var(--regular);
+  line-height: 1.5;
+}
+
 p{
   font-size: calc(~"15.600px + 0.125vw");
   line-height: 1.5em;
@@ -158,11 +166,11 @@ a {
   }
   
   &.success{
-    background-color: var(--green);
+    background-color: var(--correctGreen);
   }
 
   &.error{
-    background-color: var(--red);
+    background-color: var(--errorRed);
   }
 }
 
@@ -536,6 +544,34 @@ a {
 
     &:hover{
       color: var(--blue);
+    }
+  }
+  .questions-details{
+    margin-top: 20px;
+    .question{
+      border: 1px solid;
+      border-radius: 4px;
+      padding: 15px;
+  
+      &:not(:last-child){
+        margin-bottom: 25px;
+      }
+  
+      &#error{
+        background-color: var(--errorRedBackground);
+        border-color: var(--errorRed);
+        *{
+          color: red;
+        }
+      }
+  
+      &#correct{
+        background-color: var(--correctGreenBackground);
+        border-color: var(--correctGreen);
+        *{
+          color: var(--correctGreen);
+        }
+      }
     }
   }
 }

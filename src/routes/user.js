@@ -39,7 +39,7 @@ router.post("/create", (req, res) => {
     errors.messages.push({ text: "Email inválido" });
   }
 
-  if (Object.keys(users.find((u) => u.email === req.body.email)).length > 0) {
+  if (Object.keys(users.filter((u) => u.email === req.body.email)).length > 0) {
     errors.messages.push({ text: "Email já cadastrado" });
   }
 
@@ -80,18 +80,27 @@ router.post('/login', function (req, res) {
     messages: []
   };
 
-  if (Object.keys(users.find(user => user.email === login.email)).length === 0) {
+  if (Object.keys(users.filter(user => user.email === login.email)).length === 0) {
     errors.messages.push({ text: 'Usuário não encontrado' });
   }
 
-  if (Object.keys(users.find(user => user.password === login.password)).length === 0) {
+  if (Object.keys(users.filter(user => user.password === login.password)).length === 0) {
     errors.messages.push({ text: 'Senha incorreta' });
   }
 
   if (errors.messages.length > 0) {
     res.status(400).send(errors);
   } else {
-    res.redirect('../test');
+    let response = {
+      type: 'success',
+      messages: [
+        {
+          text: 'Bem vindo'
+        }
+      ]
+    };
+
+    res.status(200).send(response);
   }
 
 });

@@ -1,8 +1,10 @@
 :root {
   --blue: #0b0f35;
   --lightBlue: #cee9ff;
-  --green: #43b428;
-  --red: #ff5353;
+  --correctGreen: #43b428;
+  --correctGreenBackground: #d0ffc5;
+  --errorRed: #ff5353;
+  --errorRedBackground: #ffb0b0;
   --gray: #b3b3b3;
   --light: 300;
   --regular: 400;
@@ -89,6 +91,11 @@ h2 {
 h3 {
   font-size: calc(19.000px + 0.313vw);
 }
+h4 {
+  font-size: calc(17.200px + 0.250vw);
+  font-weight: var(--regular);
+  line-height: 1.5;
+}
 p {
   font-size: calc(15.600px + 0.125vw);
   line-height: 1.5em;
@@ -145,10 +152,10 @@ a :hover {
   line-height: 1.5;
 }
 .toast-message.success {
-  background-color: var(--green);
+  background-color: var(--correctGreen);
 }
 .toast-message.error {
-  background-color: var(--red);
+  background-color: var(--errorRed);
 }
 .main-header {
   background-color: var(--blue);
@@ -515,6 +522,31 @@ a :hover {
 }
 .result-details-component .btn-default:hover {
   color: var(--blue);
+}
+.result-details-component .questions-details {
+  margin-top: 20px;
+}
+.result-details-component .questions-details .question {
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 15px;
+}
+.result-details-component .questions-details .question:not(:last-child) {
+  margin-bottom: 25px;
+}
+.result-details-component .questions-details .question#error {
+  background-color: var(--errorRedBackground);
+  border-color: var(--errorRed);
+}
+.result-details-component .questions-details .question#error * {
+  color: red;
+}
+.result-details-component .questions-details .question#correct {
+  background-color: var(--correctGreenBackground);
+  border-color: var(--correctGreen);
+}
+.result-details-component .questions-details .question#correct * {
+  color: var(--correctGreen);
 }
 .footer-grid {
   background-color: var(--blue);

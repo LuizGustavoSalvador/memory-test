@@ -13,8 +13,8 @@ router.get("/", (req, res) => {
 
   let testHtml = tests.map((test) => {
     let registeredQuestions = test.questions ? Object.keys(test.questions).length : 0;
-    let addQuestion = (registeredQuestions < test.numQuestions) ? '<a class="btn-default" href="/test/'+ test.slug +'/question">Cadastrar perguntas</a>' : '';
-    let startTest = (registeredQuestions > 0) ? '<a class="btn-default" href="/test/'+ test.slug +'/start">Iniciar o Teste</a>' : '';
+    let addQuestion = (registeredQuestions < test.numQuestions) ? '<a class="btn-default" href="/test/' + test.slug + '/question">Cadastrar perguntas</a>' : '';
+    let startTest = (registeredQuestions > 0) ? '<a class="btn-default" href="/test/' + test.slug + '/start">Iniciar o Teste</a>' : '';
 
     let testHtml = testTemplate.replace("{{slug}}", test.slug);
     testHtml = testHtml.replace("{{name}}", test.name);
@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
   res.end(indexHtml);
 });
 
-router.post("/store", (req, res) => {
+router.post("/create", (req, res) => {
   const tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   const data = req.body;
   data.id = uuid.v1();
@@ -56,8 +56,8 @@ router.post("/store", (req, res) => {
     type: 'error',
     messages: []
   };
-
-  if (tests.filter(t => t.name === data.name).length > 0) {
+  
+  if (tests && Object.keys(tests.filter(t => t.slug === data.slug)).length > 0) {
     errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
 
@@ -121,7 +121,7 @@ router.get("/:slug/question", (req, res) => {
   res.end(html);
 });
 
-router.post("/question/store", (req, res) => {
+router.post("/question/create", (req, res) => {
   let data = req.body;
   let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   let testData = testFile.map((t) => {
@@ -155,7 +155,7 @@ router.get("/:slug/start", (req, res) => {
 
   if (test[0].questions) {
     let questions = test[0].questions.sort(() => Math.random() - 0.5);
-    
+
     let performTestQuestionHtml = questions.map((q, i) => {
       let num = i + 1;
       let questionHtml = performTestQuestionTemplate.replace("{{numQuestion}}", num);
@@ -164,7 +164,8 @@ router.get("/:slug/start", (req, res) => {
       questionHtml = questionHtml.replace("{{question}}", q.question);
       questionHtml = questionHtml.replace("{{id}}", i);
       questionHtml = questionHtml.replace("{{idQuestion}}", q.id);
-      let options =  q.options.map((o) => {;
+      let options = q.options.map((o) => {
+        ;
         return '<div class="option"><input class="radio" type="radio" name="optionQuestion-' + q.id + '" value="' + o.value + '"/><label for="optionQuestion-' + q.id + '">' + o.text + '</label></div>';
       });
 
@@ -196,78 +197,77 @@ router.get("/:slug/start", (req, res) => {
 
 router.post("/attempt", (req, res) => {
   let data = req.body;
- // let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(t => t.id == data.test_id);
-  // let results = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
-  // data.test_name = test[0].name;
-  // let errors = {
-  //   type: 'error',
-  //   messages: []
-  // };
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).find(t => t.id == data.test_id);
+  let result = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
+  data.test_name = test.name;
+  let errors = {
+    type: 'error',
+    messages: []
+  };
 
-  // if(data.questions.length < 0){
-  //   errors.messages.push({text: 'É obrigatório responder pelo menos 1 questão'});
-  // }
-  res.status(201).send(JSON.stringify(data));
+  if (Object.keys(data.questions).length === 0) {
+    errors.messages.push({ text: 'É obrigatório responder pelo menos 1 questão' });
+  }
+
   let hitsQuestion = 0;
   let errorQuestion = 0;
   let attemptResultDetails = [];
-  
-  // data.questions.map((q) => {
-  //   let question = test[0].questions.filter((t) => t.id === q.id);
-  //   let statusQuestion = 'error';
 
-  //   if(question.answer === q.optionSelected){
-  //       statusQuestion = 'correct';
-  //       hitsQuestion++;
-  //   }else{
-  //     errorQuestion++;
-  //   }
+  data.questions.map((q) => {
+    let question = test.questions.find((t) => t.id === q.id);
+    let statusQuestion = 'error';
 
+    if (question.answer === q.optionSelected) {
+      statusQuestion = 'correct';
+      hitsQuestion++;
+    } else {
+      errorQuestion++;
+    }
+
+    let answerText = question.options.find((a) => a.value === question.answer);
+    let optionText = question.options.find((o) => o.value === q.optionSelected);
     
-  //   let answerText = test.questions.options.find((o) => o.value === question.answer );
-  //   let optionText = test.questions.options.find((o) => o.value === q.optionSelected );
+    attemptResultDetails.push({
+      "question": question.question,
+      "answer": {
+        "text": answerText.text,
+        "value": question.answer
+      },
+      "option_selected": {
+        "text": optionText.text,
+        "value": q.optionSelected,
+      },
+      "status": statusQuestion
+    });
 
-  //   attemptResultDetails.push({  
-  //     "question": question.name,
-  //     "answer": {
-  //       "text": answerText[0].text,
-  //       "value": question.answer
-  //     },
-  //     "option_selected": {
-  //       "text": optionText[0].text,
-  //       "value": q.optionSelected,
-  //     },
-  //     "status": statusQuestion
-  //   });
+  });
 
-  // });
-  
-  // if (errors.messages.length > 0) {
-  //   res.status(400).send(errors);
-  // } else {
-  //   results.push({
-  //     "id": uuid.v1(),
-  //     "test": test[0].name,
-  //     "answered_questions": data.questions.length,
-  //     "total_questions": test[0].numQuestions,
-  //     "amount_hits": hitsQuestion,
-  //     "amount_errors": errorQuestion,
-  //     "details": attemptResultDetails
-  //   });
+  if (errors.messages.length > 0) {
+    res.status(400).send(errors);
+  } else {
+    result.push({
+      "id": uuid.v1(),
+      "test": test.name,
+      "answered_questions": data.questions.length,
+      "total_questions": test.numQuestions,
+      "amount_hits": hitsQuestion,
+      "amount_errors": errorQuestion,
+      "details": attemptResultDetails
+    });
 
-  //   fs.writeFileSync("./src/data/result.json", JSON.stringify(results), { encoding: "utf-8" });
+    fs.writeFileSync("./src/data/result.json", JSON.stringify(result), { encoding: "utf-8" });
 
-  //   let response = {
-  //     type: 'success',
-  //     messages: [
-  //       {
-  //         text: 'Tentativa realizada cadastrado com sucesso'
-  //       }
-  //     ]
-  //   };
+    let response = {
+      type: 'success',
+      messages: [
+        {
+          text: 'Tentativa realizada com sucesso'
+        }
+      ]
+    };
 
-   // res.status(201).send(response);
-  // }
+    res.status(201).send(response);
+  }
 
 });
 

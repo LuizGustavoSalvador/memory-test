@@ -13,6 +13,11 @@ export class PerformTestPage {
     });
 
     window.onload = () => {
+      this.answersConfig[this.lastId] = {
+        question: 'question-' + this.lastId,
+        optionSelected: 'optionQuestion-' + document.getElementById('question-' + this.lastId).value,
+      };
+
       document.querySelector("#performTestForm #prevQuestion").addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -52,7 +57,7 @@ export class PerformTestPage {
 
     this.answersConfig[this.lastId] = {
       question: 'question-' + this.lastId,
-      optionSelected: 'optionQustion-' + this.lastId,
+      optionSelected: 'optionQuestion-' + document.getElementById('question-' + this.lastId).value,
     };
   
     document.getElementById(prevStep).classList.add('hide');
@@ -101,12 +106,22 @@ export class PerformTestPage {
     for (const key in this.answersConfig) {
       if (Object.hasOwnProperty.call(this.answersConfig, key)) {
         const row = this.answersConfig[key];
+        console.log(row);
         const options = document.getElementsByName(row.optionSelected);
-        let optionValue = Array.from(options).find((o) => o.checked);
-        data.questions.push({
-          id: document.getElementById(row.question).value,
-          optionSelected: optionValue
-        });
+        let optionValue;
+        
+        for (const option of options) {
+          if(option.checked){
+            optionValue = option.value;
+          }
+        }
+
+        if(optionValue){
+          data.questions.push({
+            id: document.getElementById(row.question).value,
+            optionSelected: optionValue
+          });
+        }
       }
     }
 
@@ -119,9 +134,9 @@ export class PerformTestPage {
         },
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
-        //generatetoast(response);
+        generatetoast(response);
         console.log(response);
-        //formTest.reset();
+        formTest.reset();
 
       });
 

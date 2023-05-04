@@ -8,28 +8,28 @@ router.get("/:id", (req, res) => {
   let resultHtml = fs.readFileSync('././assets/html/result/result-details.html', 'utf-8');
   let questionResultTemplate = fs.readFileSync('././assets/templates/question-result.html', 'utf-8');
 
-  let result = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8')).filter(r => r.id === req.params.id); 
+  let result = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8')).find(r => r.id === req.params.id); 
 
-  if(result.length > 0){
-    resultHtml = resultHtml.replace("{{test}}", result[0].test);
-    resultHtml = resultHtml.replace("{{answeredQuestions}}", result[0].answered_questions);
-    resultHtml = resultHtml.replace("{{totalQuestions}}", result[0].total_questions);
-    resultHtml = resultHtml.replace("{{amountHits}}", result[0].amount_hits);
-    resultHtml = resultHtml.replace("{{amountErrors}}", result[0].amount_errors);
-
-    let resultQuestions = result.questions.map((q, i) => {
+  if(result && Object.keys(result).length > 0){
+    resultHtml = resultHtml.replace("{{test}}", result.test);
+    resultHtml = resultHtml.replace("{{answeredQuestions}}", result.answered_questions);
+    resultHtml = resultHtml.replace("{{totalQuestions}}", result.total_questions);
+    resultHtml = resultHtml.replace("{{amountHits}}", result.amount_hits);
+    resultHtml = resultHtml.replace("{{amountErrors}}", result.amount_errors);
+    // res.end(JSON.stringify(result));
+    let resultQuestions = result.details.map((q, i) => {
       let questionHtml = questionResultTemplate.replace("{{numQuestion}}", i + 1);
-      questionHtml = questionHtml.replace("{{status}}", q.details.status);
-      questionHtml = questionHtml.replace("{{question}}", q.details.question);
-      questionHtml = questionHtml.replace("{{optionValue}}", q.details.option_selected.value);
-      questionHtml = questionHtml.replace("{{optionText}}", q.details.option_selected.text);
-      questionHtml = questionHtml.replace("{{answerValue}}", q.details.answer.value);
-      questionHtml = questionHtml.replace("{{answerText}}", q.details.answer.text);
+      questionHtml = questionHtml.replace("{{status}}", q.status);
+      questionHtml = questionHtml.replace("{{question}}", q.question);
+      questionHtml = questionHtml.replace("{{optionValue}}", q.option_selected.value);
+      questionHtml = questionHtml.replace("{{optionText}}", q.option_selected.text);
+      questionHtml = questionHtml.replace("{{answerValue}}", q.answer.value);
+      questionHtml = questionHtml.replace("{{answerText}}", q.answer.text);
 
-      questionHtml = questionHtml.replace("{{options}}", options.join(""));
       return questionHtml;
     });
-    
+
+    resultHtml = resultHtml.replace("{{questionResults}}", resultQuestions.join(""));
     indexHtml = indexHtml.replace("{{component}}", resultHtml);
   }else{
     indexHtml = indexHtml.replace("{{component}}", fs.readFileSync('././assets/html/404.html'));

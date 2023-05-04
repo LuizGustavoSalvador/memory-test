@@ -114,7 +114,7 @@ console.log(question.options, this.maxOptions);
     }
 
     try {
-      await fetch("/test/question/store", {
+      await fetch("/test/question/create", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

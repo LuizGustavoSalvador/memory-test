@@ -1,4 +1,4 @@
-// import {generatetoast} from "./main.js";
+import { generatetoast } from "./main.js";
 
 export class TestPage {
   constructor() {
@@ -17,7 +17,7 @@ export class TestPage {
     };
 
     try {
-      await fetch("/test/store", {
+      await fetch("/test/create", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -26,11 +26,14 @@ export class TestPage {
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
         generatetoast(response);
-        
-        formTest.reset();
+        console.log(response);
 
-        if(response.type === 'success'){
-          window.location.replace("/test");
+        if (response.type === 'success') {
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          formTest.reset();
         }
       });
 
