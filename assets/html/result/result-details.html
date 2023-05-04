@@ -1,0 +1,15 @@
+<div class="result-details-component">
+  <h2 class="page-title">Detalhes do teste: {{test}}</h2>
+  
+  <div class="details">
+    <div class="details-header">
+      <h3>Questões respondidas: {{answeredQuestions}}/{{totalQuestions}}</h3>
+      <h3>Quantidade de acertos: {{amountHits}}</h3>
+      <h3>Quantidade de erros: {{amountErrors}}</h3>
+    </div>
+    <div class="list-questions">
+      {{questionResults}}
+    </div>
+  </div>
+  <a class="btn-default" href="/result">Voltar</a>
+</div>

@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get("/:id", (req, res) => {
   let indexHtml = fs.readFileSync('././assets/html/index.html', 'utf-8');
-  let resultHtml = fs.readFileSync('././assets/html/result/result.html', 'utf-8');
+  let resultHtml = fs.readFileSync('././assets/html/result/result-details.html', 'utf-8');
+  let questionResultTemplate = fs.readFileSync('././assets/templates/question-result.html', 'utf-8');
 
   let result = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8')).filter(r => r.id === req.params.id); 
 
@@ -15,6 +16,19 @@ router.get("/:id", (req, res) => {
     resultHtml = resultHtml.replace("{{totalQuestions}}", result[0].total_questions);
     resultHtml = resultHtml.replace("{{amountHits}}", result[0].amount_hits);
     resultHtml = resultHtml.replace("{{amountErrors}}", result[0].amount_errors);
+
+    let resultQuestions = result.questions.map((q, i) => {
+      let questionHtml = questionResultTemplate.replace("{{numQuestion}}", i + 1);
+      questionHtml = questionHtml.replace("{{status}}", q.details.status);
+      questionHtml = questionHtml.replace("{{question}}", q.details.question);
+      questionHtml = questionHtml.replace("{{optionValue}}", q.details.option_selected.value);
+      questionHtml = questionHtml.replace("{{optionText}}", q.details.option_selected.text);
+      questionHtml = questionHtml.replace("{{answerValue}}", q.details.answer.value);
+      questionHtml = questionHtml.replace("{{answerText}}", q.details.answer.text);
+
+      questionHtml = questionHtml.replace("{{options}}", options.join(""));
+      return questionHtml;
+    });
     
     indexHtml = indexHtml.replace("{{component}}", resultHtml);
   }else{
@@ -29,7 +43,7 @@ router.get("/", (req, res) => {
   let resultsPage = fs.readFileSync('././assets/html/result/list.html', 'utf-8');
   let resultsTemplate = fs.readFileSync('././assets/templates/result-list.html', 'utf-8');
 
-  let results = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8')); 
+  let results = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8')); 
   
   if(results.length > 0){
     results = results.sort((a, b) => {

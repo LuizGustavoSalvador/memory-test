@@ -103,9 +103,8 @@ export class PerformTestPage {
         const row = this.answersConfig[key];
         const options = document.getElementsByName(row.optionSelected);
         let optionValue = Array.from(options).find((o) => o.checked);
-        
         data.questions.push({
-          question: 'fdfs',
+          id: document.getElementById(row.question).value,
           optionSelected: optionValue
         });
       }
@@ -120,9 +119,9 @@ export class PerformTestPage {
         },
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
-        // generatetoast(response);
+        //generatetoast(response);
         console.log(response);
-        // formTest.reset();
+        //formTest.reset();
 
       });
 

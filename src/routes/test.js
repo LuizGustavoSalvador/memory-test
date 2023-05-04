@@ -12,11 +12,18 @@ router.get("/", (req, res) => {
   let testTemplate = fs.readFileSync('././assets/templates/test-list.html', 'utf-8');
 
   let testHtml = tests.map((test) => {
+    let registeredQuestions = test.questions ? Object.keys(test.questions).length : 0;
+    let addQuestion = (registeredQuestions < test.numQuestions) ? '<a class="btn-default" href="/test/'+ test.slug +'/question">Cadastrar perguntas</a>' : '';
+    let startTest = (registeredQuestions > 0) ? '<a class="btn-default" href="/test/'+ test.slug +'/start">Iniciar o Teste</a>' : '';
+
     let testHtml = testTemplate.replace("{{slug}}", test.slug);
     testHtml = testHtml.replace("{{name}}", test.name);
+    testHtml = testHtml.replace("{{registeredQuestions}}", registeredQuestions);
     testHtml = testHtml.replace("{{numQuestions}}", test.numQuestions);
     testHtml = testHtml.replace("{{maxOptions}}", test.maxOptions);
     testHtml = testHtml.replace("{{slug}}", test.slug);
+    testHtml = testHtml.replace("{{addQuestion}}", addQuestion);
+    testHtml = testHtml.replace("{{startTest}}", startTest);
 
     return testHtml;
   });
@@ -44,7 +51,7 @@ router.post("/store", (req, res) => {
   const tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   const data = req.body;
   data.id = uuid.v1();
-  data.slug = slugify(data.name);
+  data.slug = slugify(data.name).toLowerCase();
   let errors = {
     type: 'error',
     messages: []
@@ -119,8 +126,8 @@ router.post("/question/store", (req, res) => {
   let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   let testData = testFile.map((t) => {
     if (data.test_id === t.id) {
-      data.questions.map((q, i) => q.id = i++);
-      t.questions = data.questions;
+      data.questions.map((q, i) => q.id = uuid.v1());
+      t.questions.push(data.questions);
     }
     return t;
   });
@@ -148,15 +155,17 @@ router.get("/:slug/start", (req, res) => {
 
   if (test[0].questions) {
     let questions = test[0].questions.sort(() => Math.random() - 0.5);
-
+    
     let performTestQuestionHtml = questions.map((q, i) => {
-      let questionHtml = performTestQuestionTemplate.replace("{{numQuestion}}", i + 1);
+      let num = i + 1;
+      let questionHtml = performTestQuestionTemplate.replace("{{numQuestion}}", num);
       questionHtml = questionHtml.replace("{{id}}", i);
       questionHtml = questionHtml.replace("{{status}}", (i > 0) ? 'hide' : '');
       questionHtml = questionHtml.replace("{{question}}", q.question);
+      questionHtml = questionHtml.replace("{{id}}", i);
       questionHtml = questionHtml.replace("{{idQuestion}}", q.id);
-      let options = q.options.map((o) => {
-        return '<div class="option"><input class="radio" type="radio" name="optionQustion-' + q.id + '" value="' + o.value + '"/><label for="option"' + o.value + '>' + o.text + '</label></div>';
+      let options =  q.options.map((o) => {;
+        return '<div class="option"><input class="radio" type="radio" name="optionQuestion-' + q.id + '" value="' + o.value + '"/><label for="optionQuestion-' + q.id + '">' + o.text + '</label></div>';
       });
 
       questionHtml = questionHtml.replace("{{options}}", options.join(""));
@@ -187,22 +196,77 @@ router.get("/:slug/start", (req, res) => {
 
 router.post("/attempt", (req, res) => {
   let data = req.body;
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(t => t.id === data.test_id);
-  let results = JSON.parse(fs.readFileSync('./src/data/results.json', 'utf-8'));
-  data.test_name = test[0].name;
-  let errors = {
-    type: 'error',
-    messages: []
-  };
+ // let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(t => t.id == data.test_id);
+  // let results = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
+  // data.test_name = test[0].name;
+  // let errors = {
+  //   type: 'error',
+  //   messages: []
+  // };
 
-  if(data.questions.length < 0){
-    errors.messages.push({text: 'É obrigatório responder pelo menos 1 questão'});
-  }
-  res.send(data);
-  // if(errors.messages.length > 0){
-  //   res.status(400).send(errors.json());
-  // }else{
-  //   res.status(200).end(data);
+  // if(data.questions.length < 0){
+  //   errors.messages.push({text: 'É obrigatório responder pelo menos 1 questão'});
+  // }
+  res.status(201).send(JSON.stringify(data));
+  let hitsQuestion = 0;
+  let errorQuestion = 0;
+  let attemptResultDetails = [];
+  
+  // data.questions.map((q) => {
+  //   let question = test[0].questions.filter((t) => t.id === q.id);
+  //   let statusQuestion = 'error';
+
+  //   if(question.answer === q.optionSelected){
+  //       statusQuestion = 'correct';
+  //       hitsQuestion++;
+  //   }else{
+  //     errorQuestion++;
+  //   }
+
+    
+  //   let answerText = test.questions.options.find((o) => o.value === question.answer );
+  //   let optionText = test.questions.options.find((o) => o.value === q.optionSelected );
+
+  //   attemptResultDetails.push({  
+  //     "question": question.name,
+  //     "answer": {
+  //       "text": answerText[0].text,
+  //       "value": question.answer
+  //     },
+  //     "option_selected": {
+  //       "text": optionText[0].text,
+  //       "value": q.optionSelected,
+  //     },
+  //     "status": statusQuestion
+  //   });
+
+  // });
+  
+  // if (errors.messages.length > 0) {
+  //   res.status(400).send(errors);
+  // } else {
+  //   results.push({
+  //     "id": uuid.v1(),
+  //     "test": test[0].name,
+  //     "answered_questions": data.questions.length,
+  //     "total_questions": test[0].numQuestions,
+  //     "amount_hits": hitsQuestion,
+  //     "amount_errors": errorQuestion,
+  //     "details": attemptResultDetails
+  //   });
+
+  //   fs.writeFileSync("./src/data/result.json", JSON.stringify(results), { encoding: "utf-8" });
+
+  //   let response = {
+  //     type: 'success',
+  //     messages: [
+  //       {
+  //         text: 'Tentativa realizada cadastrado com sucesso'
+  //       }
+  //     ]
+  //   };
+
+   // res.status(201).send(response);
   // }
 
 });
