@@ -16,16 +16,13 @@ export class QuestionPage {
     });
 
     window.onload = () => {
+      this.createQuestion();
+
       document.querySelector("#questionRegisterForm #addQuestion").addEventListener('click', (e) => {
         e.preventDefault();
         this.createQuestion();
       });
 
-      this.createQuestion();
-
-      // $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-      //     e.preventDefault(); $(this).parent('div').remove(); x--;
-      // })
     };
   }
 
@@ -50,7 +47,6 @@ export class QuestionPage {
 
     let question = document.createElement('div');
     question.classList.add('question');
-    question.setAttribute('id-question', this.lastId);
     question.tabIndex = this.lastId;
 
     let optionsHtml = '<div id="optionsquestion' + this.lastId + '" class="options-question"><p>Alternativas:</p><div class="options-list"><input class="form-control" type="text"  alternative="A" id="' + this.questionConfig[this.lastId].options[0].input + '" name="option' + this.lastId + '" placeholder="Alternativa A" required></div><button id="addOption' + this.lastId + '" class="btn-default" type="button" onclick="questionPage.createOption(' + this.lastId + ')">Adicionar opção</button></div>';
@@ -77,13 +73,14 @@ export class QuestionPage {
     option.setAttribute('type', 'text');
     option.setAttribute('name', newOption.input);
     option.placeholder = 'Alternativa ' + newOption.value;
-    document.querySelector("#questionRegisterForm .options-list").appendChild(option);
+    console.log(question.question);
+    document.querySelector("#optionsquestion" + this.lastId +" .options-list").appendChild(option);
 
     let answer = document.createElement('option');
     answer.setAttribute('value', newOption.value);
     answer.innerText = newOption.value;
     document.querySelector("#answerlist-" + this.lastId).appendChild(answer);
-console.log(question.options, this.maxOptions);
+
     if (question.options.length >= this.maxOptions) {
       let button = document.querySelector("form #addOption"+this.lastId);
       button.setAttribute('disabled', true);
