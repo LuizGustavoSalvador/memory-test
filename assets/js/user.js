@@ -1,4 +1,4 @@
-import { generatetoast, getCookie } from "./main.js";
+import { generatetoast, getCookie } from "./helpers.js";
 
 export class UserPage {
 

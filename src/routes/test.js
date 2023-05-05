@@ -35,6 +35,12 @@ router.get("/", (req, res) => {
   }
 
   testPage = testPage.replace("{{list}}", testHtml);
+
+  if(typeof req.cookies.token !== 'undefined' && req.cookies.token !== '' && req.cookies.token !== null){
+    testPage = testPage;
+  }else{
+    testPage = fs.readFileSync('././assets/html/not-allowed.html', 'utf-8');
+  }
   indexHtml = indexHtml.replace("{{component}}", testPage);
   indexHtml = indexHtml.replace("{{jsCustom}}", `
   <script type="module">
@@ -56,7 +62,7 @@ router.post("/create", (req, res) => {
     type: 'error',
     messages: []
   };
-  
+
   if (tests && Object.keys(tests.filter(t => t.slug === data.slug)).length > 0) {
     errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
@@ -106,7 +112,6 @@ router.get("/:slug/question", (req, res) => {
     }
   }
 
-
   question = question.replace("{{testName}}", test[0].name);
   question = question.replace("{{testId}}", test[0].id);
   html = html.replace("{{component}}", question);
@@ -123,26 +128,53 @@ router.get("/:slug/question", (req, res) => {
 
 router.post("/question/create", (req, res) => {
   let data = req.body;
-  let testFile = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
-  let testData = testFile.map((t) => {
-    if (data.test_id === t.id) {
-      data.questions.map((q, i) => q.id = uuid.v1());
-      t.questions.push(data.questions);
-    }
-    return t;
-  });
+  let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
+  let errors = {
+    type: 'error',
+    messages: []
+  };
 
-  fs.writeFileSync("./src/data/test.json", JSON.stringify(testData), { encoding: "utf-8" });
+  if (data.questions && Object.keys(data.questions).length > 0) {
+    let newQuestions = data.questions.map((q) => {
+      q.id = uuid.v1();
 
-  let response = {
-    type: 'success',
-    messages: [
-      {
-        text: 'Perguntas cadastradas com sucesso'
+      if (q.question.trim().length === 0) {
+        errors.messages.push({ text: 'Existe uma questão vazia informada' });
+        return;
       }
-    ]
+
+      return q;
+    });
+
+    tests = tests.map((t) => {
+      if (t.id === data.test_id) {
+        if (!t.questions) {
+          t.questions = [];
+        }
+        t.questions.push(newQuestions);
+      }
+
+      return t;
+    });
+  } else {
+    errors.messages.push({ text: 'É obrigatório inserir pelo menos 1 questão' });
   }
-  res.status(201).send(response);
+
+  if (errors.messages.length > 0) {
+    res.status(400).send(errors);
+  } else {
+    fs.writeFileSync("./src/data/test.json", JSON.stringify(tests), { encoding: "utf-8" });
+
+    let response = {
+      type: 'success',
+      messages: [
+        {
+          text: 'Perguntas cadastradas com sucesso'
+        }
+      ]
+    }
+    res.status(201).send(response);
+  }
 });
 
 router.get("/:slug/start", (req, res) => {
@@ -165,7 +197,6 @@ router.get("/:slug/start", (req, res) => {
       questionHtml = questionHtml.replace("{{id}}", i);
       questionHtml = questionHtml.replace("{{idQuestion}}", q.id);
       let options = q.options.map((o) => {
-        ;
         return '<div class="option"><input class="radio" type="radio" name="optionQuestion-' + q.id + '" value="' + o.value + '"/><label for="optionQuestion-' + q.id + '">' + o.text + '</label></div>';
       });
 
@@ -226,7 +257,7 @@ router.post("/attempt", (req, res) => {
 
     let answerText = question.options.find((a) => a.value === question.answer);
     let optionText = question.options.find((o) => o.value === q.optionSelected);
-    
+
     attemptResultDetails.push({
       "question": question.question,
       "answer": {

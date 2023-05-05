@@ -1,4 +1,4 @@
-import { generatetoast } from "./main.js";
+import { generatetoast } from "./helpers.js";
 
 export class TestPage {
   constructor() {
@@ -26,12 +26,11 @@ export class TestPage {
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
         generatetoast(response);
-        console.log(response);
 
         if (response.type === 'success') {
           setTimeout(() => {
             window.location.reload();
-          }, 2000);
+          }, 1000);
         } else {
           formTest.reset();
         }

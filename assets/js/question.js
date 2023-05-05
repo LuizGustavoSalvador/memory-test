@@ -1,4 +1,4 @@
-import {generatetoast, getCookie} from "./main.js";
+import {generatetoast, getCookie} from "./helpers.js";
 
 export class QuestionPage {
   maxOptions = 0;
@@ -73,7 +73,7 @@ export class QuestionPage {
     option.setAttribute('type', 'text');
     option.setAttribute('name', newOption.input);
     option.placeholder = 'Alternativa ' + newOption.value;
-    console.log(question.question);
+    
     document.querySelector("#optionsquestion" + this.lastId +" .options-list").appendChild(option);
 
     let answer = document.createElement('option');
@@ -90,7 +90,7 @@ export class QuestionPage {
   }
 
   async submit() {
-    let result = {
+    let data = {
       test_id: document.querySelector("form #testId").value,
       questions: []
     };
@@ -98,7 +98,7 @@ export class QuestionPage {
     for (const key in this.questionConfig) {
       if (Object.hasOwnProperty.call(this.questionConfig, key)) {
         const row = this.questionConfig[key];
-        result.questions.push({
+        data.questions.push({
           id: row.id + 1,
           question: document.getElementById(row.question).value,
           answer: document.getElementById(row.answer).value,
@@ -117,9 +117,15 @@ export class QuestionPage {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(result),
+        body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
         generatetoast(response);
+
+        if (response.type === 'success') {
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
       });
 
     } catch (error) {

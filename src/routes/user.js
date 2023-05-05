@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const uuid = require("uuid");
+const jsonWebToken = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get("/", (req, res) => {
 `);
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  indexHtml = indexHtml.toString().replace("{{component}}", register);
+  indexHtml = indexHtml.replace("{{component}}", register);
 
   res.end(indexHtml)
 });
@@ -71,21 +72,17 @@ router.post("/create", (req, res) => {
   }
 });
 
-router.post('/login', function (req, res) {
-  const users = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8" ));
+router.post('/login', async function (req, res) {
   const { email, password } = req.body;
   const login = { email, password };
+  const user = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8" )).find((u) => ((u.email === login.email) && u.password === login.password));
   const errors = {
     type: 'error',
     messages: []
   };
 
-  if (Object.keys(users.filter(user => user.email === login.email)).length === 0) {
+  if (Object.keys(user).length === 0) {
     errors.messages.push({ text: 'Usuário não encontrado' });
-  }
-
-  if (Object.keys(users.filter(user => user.password === login.password)).length === 0) {
-    errors.messages.push({ text: 'Senha incorreta' });
   }
 
   if (errors.messages.length > 0) {
@@ -100,9 +97,20 @@ router.post('/login', function (req, res) {
       ]
     };
 
+    Token = await jsonWebToken.sign({
+      "email": login.email,
+      "nome": user.nome
+    }, "TokenVerificationPassword");
+
+    res.cookie("token", Token);
     res.status(200).send(response);
   }
 
+});
+
+router.get('/logout', function (req, res) {
+  res.clearCookie("token");
+  res.end();
 });
 
 module.exports = router;

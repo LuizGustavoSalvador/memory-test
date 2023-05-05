@@ -1,14 +1,21 @@
 const express = require('express');
+const fs = require('fs');
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+
 const routes = require('./src/routes/route');
 const result = require('./src/routes/result');
 const test = require('./src/routes/test');
 const user = require('./src/routes/user');
-const fs = require('fs');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
 const app = express();
 
+app.use(cors());
+app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/assets'));
 app.use(routes);
 app.use(express.urlencoded({

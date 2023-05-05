@@ -548,6 +548,35 @@ a :hover {
 .result-details-component .questions-details .question#correct * {
   color: var(--correctGreen);
 }
+.not-allowed-component {
+  height: 80vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.not-allowed-component h3 {
+  font-weight: var(--regular);
+}
+.not-allowed-component .btn-default {
+  margin-top: 30px;
+  color: white;
+}
+.not-allowed-component .btn-default:not(:last-child) {
+  margin-right: 10px;
+}
+.not-allowed-component .btn-default:hover {
+  color: var(--blue);
+}
 .footer-grid {
   background-color: var(--blue);
   padding-bottom: 20px;

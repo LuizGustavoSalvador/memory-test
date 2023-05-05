@@ -52,7 +52,13 @@
       <span class="copyright">©Memory Test. Todos os direitos Reservados.</span>
     </div>
   </footer>
-  <div class="custom-js" style="display: none;">{{jsCustom}}</div>
+  <div class="custom-js" style="display: none;">
+    <script type="module">
+      import { Main } from "/js/main.js";
+      window.Main = new Main();
+    </script>
+    {{jsCustom}}
+  </div>
 </body>
 
 </html>

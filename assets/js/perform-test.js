@@ -1,4 +1,4 @@
-import { generatetoast, getCookie } from "./main.js";
+import { generatetoast, getCookie } from "./helpers.js";
 
 export class PerformTestPage {
   lastId = 0;
@@ -83,7 +83,6 @@ export class PerformTestPage {
     }
 
     if (this.lastId >= (this.stepLimit - 1)) {
-      console.log(this.lastId);
       let next = document.querySelector('#performTestForm #nextQuestion');
       next.disabled = true;
       next.classList.add('disabled-button');
@@ -106,7 +105,6 @@ export class PerformTestPage {
     for (const key in this.answersConfig) {
       if (Object.hasOwnProperty.call(this.answersConfig, key)) {
         const row = this.answersConfig[key];
-        console.log(row);
         const options = document.getElementsByName(row.optionSelected);
         let optionValue;
         
@@ -135,7 +133,7 @@ export class PerformTestPage {
         body: JSON.stringify(data),
       }).then(response => response.json()).then((response) => {
         generatetoast(response);
-        console.log(response);
+
         formTest.reset();
 
       });
