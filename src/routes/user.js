@@ -75,16 +75,16 @@ router.post("/create", (req, res) => {
 router.post('/login', async function (req, res) {
   const { email, password } = req.body;
   const login = { email, password };
-  const user = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8" )).find((u) => ((u.email === login.email) && u.password === login.password));
+  const user = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8" )).find((u) => u.email === login.email && u.password === login.password);
   const errors = {
     type: 'error',
     messages: []
   };
-
-  if (Object.keys(user).length === 0) {
+  
+  if (!user) {
     errors.messages.push({ text: 'Usuário não encontrado' });
   }
-
+  
   if (errors.messages.length > 0) {
     res.status(400).send(errors);
   } else {
@@ -97,20 +97,20 @@ router.post('/login', async function (req, res) {
       ]
     };
 
-    Token = await jsonWebToken.sign({
+    let token = await jsonWebToken.sign({
       "email": login.email,
       "nome": user.nome
     }, "TokenVerificationPassword");
 
-    res.cookie("token", Token);
+    res.cookie("token", token);
     res.status(200).send(response);
   }
 
 });
 
-router.get('/logout', function (req, res) {
+router.post('/logout', function (req, res) {
   res.clearCookie("token");
-  res.end();
+  res.send({});
 });
 
 module.exports = router;

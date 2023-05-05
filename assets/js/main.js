@@ -5,7 +5,7 @@ export class Main {
     this.token = getCookie("token");
 
     window.onload = () => {
-      if (this.token !== '' && this.token !== null) {
+      if (this.token) {
         this.addLogout();
 
         document.querySelector("#logoutButton").addEventListener('click', (e) => {
@@ -14,7 +14,7 @@ export class Main {
           this.logout();
         });
       }else{
-        document.querySelector("ul .logout-item").remove();
+        document.querySelector("ul .logout-item")?.remove();
       }
     };
   }
@@ -31,7 +31,7 @@ export class Main {
   async logout() {
     try {
       await   fetch("/user/logout", {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
