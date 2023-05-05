@@ -61,15 +61,16 @@ router.post("/create", (req, res) => {
 
   const { name, numQuestions, maxOptions } = req.body;
   const id = uuid.v1();
-  const slug = slugify(data.name).toLowerCase();
-  let data = { id, slug, name, numQuestions, maxOptions };
+  const questions = [];
+  const slug = slugify(req.body.name).toLowerCase();
+  let data = { id, slug, name, numQuestions, maxOptions, questions };
 
   let errors = {
     type: 'error',
     messages: []
   };
 
-  if (tests && Object.keys(tests.filter(t => t.slug === data.slug)).length > 0) {
+  if (tests && tests.find(t => t.slug === data.slug)) {
     errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
 
@@ -92,7 +93,7 @@ router.post("/create", (req, res) => {
       type: 'success',
       messages: [
         {
-          text: 'Test cadastrado com sucesso'
+          text: 'Teste cadastrado com sucesso'
         }
       ]
     };
@@ -159,10 +160,9 @@ router.post("/question/create", (req, res) => {
 
     tests = tests.map((t) => {
       if (t.id === data.test_id) {
-        if (!t.questions) {
-          t.questions = [];
+        for(i = 0; i < newQuestions.length; i++){
+          t.questions.push(newQuestions[i]);
         }
-        t.questions.push(newQuestions);
       }
 
       return t;
