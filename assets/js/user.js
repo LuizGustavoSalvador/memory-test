@@ -69,7 +69,7 @@ export class User {
         if (response.type === 'success') {
           setTimeout(() => {
             window.location.replace("/test");
-          }, 1000);
+          }, 300);
         } else {
           formTest.reset();
         }
@@ -93,7 +93,7 @@ export class User {
 
         setTimeout(() => {
           window.location.replace("/").reload();
-        }, 1000);
+        }, 300);
       });
 
     } catch (error) {

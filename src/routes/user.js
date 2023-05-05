@@ -7,24 +7,44 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   let indexHtml = fs.readFileSync("././assets/html/index.html", "utf-8");
-  // let a = fs.readFileSync("./src/data/user.json");
-  const register = fs.readFileSync("././assets/html/user/register.html");
+  let registerHtml = fs.readFileSync("././assets/html/user/register.html", "utf-8");
 
-  if(!req.cookies.token){
+  let userTemplate = fs.readFileSync("././assets/templates/user-list.html", "utf-8");
+
+  let users = JSON.parse(fs.readFileSync('./src/data/user.json', 'utf-8'));
+
+  if (!req.cookies.token) {
+    let usersHtml = users.map((u) => {
+      let userHtml = userTemplate.replace("{{name}}", u.name);
+      userHtml = userHtml.replace("{{email}}", u.email);
+      userHtml = userHtml.replace("{{password}}", u.password);
+
+      return userHtml;
+    });
+
+    if (usersHtml.length < 1) {
+      usersHtml = '<h3 class="no-users">Nenhum usuário cadastrado</h3>';
+    } else {
+      usersHtml = '<div class="list-user">' + usersHtml.join("") + '</div>';
+    }
+
+    registerHtml = registerHtml.replace("{{usersList}}", usersHtml);
+    indexHtml = indexHtml.replace("{{component}}", registerHtml);
+
     res.writeHead(200, { 'Content-Type': 'text/html' });
-  indexHtml = indexHtml.replace("{{component}}", register);
-
-  res.end(indexHtml)
-  }else{
+    res.end(indexHtml)
+  } else {
     res.redirect("/test").end();
   }
 });
 
 router.post("/create", (req, res) => {
   const users = JSON.parse(fs.readFileSync('./src/data/user.json', 'utf-8'));
+
   const { name, email, password } = req.body;
   const id = uuid.v1();
   const user = { id, name, email, password };
+
   const errors = {
     type: 'error',
     messages: []
@@ -73,12 +93,14 @@ router.post("/create", (req, res) => {
 router.post('/login', async function (req, res) {
   const { email, password } = req.body;
   const login = { email, password };
-  const user = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8" )).find((u) => u.email === login.email && u.password === login.password);
+
+  const user = JSON.parse(fs.readFileSync('./src/data/user.json', "utf-8")).find((u) => u.email === login.email && u.password === login.password);
+
   const errors = {
     type: 'error',
     messages: []
   };
-  
+
   if (!user) {
     errors.messages.push({ text: 'Usuário não encontrado' });
   }

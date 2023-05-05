@@ -8,8 +8,10 @@ const router = express.Router();
 router.get("/", (req, res) => {
   let indexHtml = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let testPage = fs.readFileSync('././assets/html/test/test.html', 'utf-8');
-  let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
+
   let testTemplate = fs.readFileSync('././assets/templates/test-list.html', 'utf-8');
+
+  let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
 
   let testHtml = tests.map((test) => {
     let registeredQuestions = test.questions ? Object.keys(test.questions).length : 0;
@@ -36,18 +38,19 @@ router.get("/", (req, res) => {
 
   testPage = testPage.replace("{{list}}", testHtml);
 
-  if(req.cookies.token){
+  if (req.cookies.token) {
     testPage = testPage;
-  }else{
+  } else {
     testPage = fs.readFileSync('././assets/html/not-allowed.html', 'utf-8');
   }
+
   indexHtml = indexHtml.replace("{{component}}", testPage);
   indexHtml = indexHtml.replace("{{jsCustom}}", `
-  <script type="module">
-    import { TestPage } from "/js/test.js";
-    window.TestPage = new TestPage();
-  </script>
-`);
+    <script type="module">
+      import { TestPage } from "/js/test.js";
+      window.TestPage = new TestPage();
+    </script>
+  `);
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.end(indexHtml);
@@ -62,11 +65,11 @@ router.post("/create", (req, res) => {
     type: 'error',
     messages: []
   };
-  
+
   if (tests && Object.keys(tests.filter(t => t.slug === data.slug)).length > 0) {
     errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
-  
+
   if (data.numQuestions > 10 || data.numQuestions < 1) {
     errors.messages.push({ text: 'A quantidade de questões deve ser entre 1 e 10' });
   }
@@ -74,14 +77,14 @@ router.post("/create", (req, res) => {
   if (data.maxOptions > 5 || data.maxOptions < 2) {
     errors.messages.push({ text: 'A quantidade de opções por questão deve ser entre 2 e 5' });
   }
-  
+
   if (errors.messages.length > 0) {
     res.status(400).send(errors);
   } else {
     tests.push(data);
-    
+
     fs.writeFileSync("./src/data/test.json", JSON.stringify(tests), { encoding: "utf-8" });
-    
+
     let response = {
       type: 'success',
       messages: [
@@ -91,7 +94,7 @@ router.post("/create", (req, res) => {
       ]
     };
 
-      res.status(201).send(response);
+    res.status(201).send(response);
   }
 });
 

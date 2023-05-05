@@ -1,8 +1,1 @@
-[
-    {
-        "id": "d5a141e0-ea28-11ed-bf02-5bd9215a02ff",
-        "name": "dd",
-        "email": "teste@teste.com",
-        "password": "1234"
-    }
-]
+[{"id": "d5a141e0-ea28-11ed-bf02-5bd9215a02ff", "name": "dd", "email": "teste@teste.com", "password": "1234"}]
