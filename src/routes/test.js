@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
 
   testPage = testPage.replace("{{list}}", testHtml);
 
-  if(typeof req.cookies.token !== 'undefined' && req.cookies.token !== '' && req.cookies.token !== null){
+  if(req.cookies.token){
     testPage = testPage;
   }else{
     testPage = fs.readFileSync('././assets/html/not-allowed.html', 'utf-8');

@@ -490,6 +490,7 @@ a :hover {
   background-color: var(--lightBlue);
 }
 .result-details-component {
+  padding-top: 50px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
