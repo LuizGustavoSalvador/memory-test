@@ -554,6 +554,18 @@ a :hover {
 .result-details-component .questions-details .question#correct * {
   color: var(--correctGreen);
 }
+.no-results-component {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  min-height: 80vh;
+}
 .not-allowed-component {
   height: 80vh;
   display: -webkit-box;
