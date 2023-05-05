@@ -54,19 +54,19 @@ router.get("/", (req, res) => {
 });
 
 router.post("/create", (req, res) => {
-  const tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
-  const data = req.body;
+  let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
+  let data = req.body;
   data.id = uuid.v1();
   data.slug = slugify(data.name).toLowerCase();
   let errors = {
     type: 'error',
     messages: []
   };
-
+  
   if (tests && Object.keys(tests.filter(t => t.slug === data.slug)).length > 0) {
     errors.messages.push({ text: 'Já existe um teste cadastrado com este nome' });
   }
-
+  
   if (data.numQuestions > 10 || data.numQuestions < 1) {
     errors.messages.push({ text: 'A quantidade de questões deve ser entre 1 e 10' });
   }
@@ -74,14 +74,14 @@ router.post("/create", (req, res) => {
   if (data.maxOptions > 5 || data.maxOptions < 2) {
     errors.messages.push({ text: 'A quantidade de opções por questão deve ser entre 2 e 5' });
   }
-
+  
   if (errors.messages.length > 0) {
     res.status(400).send(errors);
   } else {
     tests.push(data);
-
+    
     fs.writeFileSync("./src/data/test.json", JSON.stringify(tests), { encoding: "utf-8" });
-
+    
     let response = {
       type: 'success',
       messages: [
@@ -91,7 +91,7 @@ router.post("/create", (req, res) => {
       ]
     };
 
-    res.status(201).send(response);
+      res.status(201).send(response);
   }
 });
 
@@ -230,6 +230,8 @@ router.post("/attempt", (req, res) => {
   let data = req.body;
   let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).find(t => t.id == data.test_id);
   let result = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
+  let resultId = uuid.v1();
+
   data.test_name = test.name;
   let errors = {
     type: 'error',
@@ -277,7 +279,7 @@ router.post("/attempt", (req, res) => {
     res.status(400).send(errors);
   } else {
     result.push({
-      "id": uuid.v1(),
+      "id": resultId,
       "test": test.name,
       "answered_questions": data.questions.length,
       "total_questions": test.numQuestions,
@@ -290,6 +292,7 @@ router.post("/attempt", (req, res) => {
 
     let response = {
       type: 'success',
+      result: resultId,
       messages: [
         {
           text: 'Tentativa realizada com sucesso'

@@ -9,12 +9,6 @@ router.get("/", (req, res) => {
   let indexHtml = fs.readFileSync("././assets/html/index.html", "utf-8");
   let a = fs.readFileSync("./src/data/user.json");
   const register = fs.readFileSync("././assets/html/user/register.html");
-  indexHtml = indexHtml.replace("{{jsCustom}}", `
-  <script type="module">
-    import { UserPage } from "/js/user.js";
-    window.UserPage = new UserPage();
-  </script>
-`);
 
   res.writeHead(200, { 'Content-Type': 'text/html' });
   indexHtml = indexHtml.replace("{{component}}", register);

@@ -134,8 +134,11 @@ export class PerformTestPage {
       }).then(response => response.json()).then((response) => {
         generatetoast(response);
 
-        formTest.reset();
-
+        if (response.type === 'success') {
+          setTimeout(() => {
+            window.location.replace("/result/" + response.result).reload();
+          }, 1000);
+        }
       });
 
     } catch (error) {

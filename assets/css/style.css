@@ -195,6 +195,13 @@ a :hover {
   align-items: center;
   justify-content: center;
 }
+.main-header .header-grid ul li .btn-default {
+  background-color: white;
+  color: var(--blue);
+}
+.main-header .header-grid ul li .btn-default:hover {
+  background-color: var(--lightBlue);
+}
 .main-header .header-grid ul li a {
   position: relative;
   display: block;

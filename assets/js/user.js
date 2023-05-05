@@ -1,10 +1,36 @@
-import { generatetoast, getCookie } from "./helpers.js";
+import { generatetoast, getCookie, addLogin, addLogout } from "./helpers.js";
 
-export class UserPage {
+export class User {
 
   constructor() {
     let loginButton = document.querySelector("#userLoginForm #loginButton");
     let createUserButton = document.querySelector("#userRegisterForm #createUserButton");
+    
+    this.token = getCookie("token");
+
+    window.onload = () => {
+      if (this.token) {
+        addLogout();
+
+        document.querySelector("#logoutButton").addEventListener('click', (e) => {
+          e.preventDefault();
+
+          this.logout();
+        });
+
+        document.querySelector("ul .login-item")?.remove();
+      }else{
+        addLogin();
+
+        document.querySelector("#loginButton").addEventListener('click', (e) => {
+          e.preventDefault();
+
+          window.location.replace("/").reload();
+        });
+
+        document.querySelector("ul .logout-item")?.remove();
+      }
+    };
 
     if (loginButton) {
       document.querySelector("#userLoginForm #loginButton").addEventListener('click', (e) => {
@@ -41,7 +67,7 @@ export class UserPage {
         if (response.type === 'success') {
           setTimeout(() => {
             window.location.replace("/test");
-          }, 2000);
+          }, 1000);
         } else {
           formTest.reset();
         }
@@ -49,6 +75,27 @@ export class UserPage {
       });
     } catch (error) {
       generatetoast(error);
+    }
+  }
+
+  async logout() {
+    try {
+      await   fetch("/user/logout", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      }).then(response => response.json()).then((response) => {
+        document.querySelector("ul .logout-item").remove();
+
+        setTimeout(() => {
+          window.location.replace("/").reload();
+        }, 1000);
+      });
+
+    } catch (error) {
+      console.log(error);
     }
   }
 
