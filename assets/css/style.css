@@ -175,13 +175,8 @@ a :hover {
   -ms-flex-align: center;
   align-items: center;
 }
-.main-header .header-grid .logo-link {
-  cursor: pointer;
-  position: relative;
-  display: block;
-  padding-right: calc(-37.826px + 9.783vw);
-}
-.main-header .header-grid .logo-link img {
+.main-header .header-grid img {
+  margin-right: calc(-37.826px + 9.783vw);
   display: block;
   width: 50px;
   -o-object-fit: cover;
