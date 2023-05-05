@@ -46,8 +46,8 @@ router.get("/", (req, res) => {
   let resultsTemplate = fs.readFileSync('././assets/templates/result-list.html', 'utf-8');
 
   let results = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
-
-  if (results) {
+  
+  if (results.length > 0) {
     results = results.sort((a, b) => {
       if ((a.amount_hits > b.amount_hits) && a.answered_questions > b.answered_questions) {
         return -1;
