@@ -15,7 +15,7 @@ export class QuestionPage {
       this.submit();
     });
 
-    window.onload = () => {
+    window.addEventListener('load', () => {
       this.createQuestion();
 
       document.querySelector("#questionRegisterForm #addQuestion").addEventListener('click', (e) => {
@@ -23,7 +23,7 @@ export class QuestionPage {
         this.createQuestion();
       });
 
-    };
+    });
   }
 
   createQuestion() {

@@ -12,7 +12,7 @@ export class PerformTestPage {
       this.submit();
     });
 
-    window.onload = () => {
+    window.addEventListener('load', () => {
       this.answersConfig[this.lastId] = {
         question: 'question-' + this.lastId,
         optionSelected: 'optionQuestion-' + document.getElementById('question-' + this.lastId).value,
@@ -31,7 +31,7 @@ export class PerformTestPage {
 
         this.nextQuestion();
       });
-    };
+    });
   }
 
   prevQuestion() {

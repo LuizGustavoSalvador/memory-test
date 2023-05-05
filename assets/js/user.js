@@ -8,7 +8,7 @@ export class User {
 
     this.token = getCookie("token");
 
-    window.onload = () => {
+    window.addEventListener('load', () => {
       if (this.token) {
         addLogout();
 
@@ -32,7 +32,7 @@ export class User {
         document.querySelector(".menu-principal .user-link")?.classList.remove("hide");
         document.querySelector(".menu-principal .logout-item")?.remove();
       }
-    };
+    });
 
     if (loginButton) {
       document.querySelector("#userLoginForm #loginButton").addEventListener('click', (e) => {
