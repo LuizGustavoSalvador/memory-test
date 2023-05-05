@@ -104,7 +104,7 @@ router.post('/login', async function (req, res) {
   if (!user) {
     errors.messages.push({ text: 'Usuário não encontrado' });
   }
-  
+
   if (errors.messages.length > 0) {
     res.status(400).send(errors);
   } else {

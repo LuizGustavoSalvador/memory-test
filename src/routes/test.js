@@ -58,9 +58,12 @@ router.get("/", (req, res) => {
 
 router.post("/create", (req, res) => {
   let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
-  let data = req.body;
-  data.id = uuid.v1();
-  data.slug = slugify(data.name).toLowerCase();
+
+  const { name, numQuestions, maxOptions } = req.body;
+  const id = uuid.v1();
+  const slug = slugify(data.name).toLowerCase();
+  let data = { id, slug, name, numQuestions, maxOptions };
+
   let errors = {
     type: 'error',
     messages: []
@@ -99,26 +102,29 @@ router.post("/create", (req, res) => {
 });
 
 router.get("/:slug/question", (req, res) => {
-  let slug = req.params.slug;
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === slug);
-  let html = fs.readFileSync('././assets/html/index.html', 'utf-8');
+  const slug = req.params.slug;
+
+  let indexHtml = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let question = fs.readFileSync('././assets/html/question/question.html', 'utf-8');
 
-  if (test.length === 1) {
-    let questions = test[0].questions ? test[0].questions.length : 0;
-    let numQuestions = test[0].numQuestions - questions;
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).find(test => test.slug === slug);
+
+  if (test) {
+    let questions = test.questions ? test.questions.length : 0;
+    let numQuestions = test.numQuestions - questions;
     res.cookie('maxQuestions', numQuestions > 0 ? numQuestions : 0);
-    res.cookie('maxOptions', test[0].maxOptions);
+    res.cookie('maxOptions', test.maxOptions);
 
     if (numQuestions < 1) {
       question = fs.readFileSync('././assets/html/question/limit-question.html', 'utf-8');
     }
   }
 
-  question = question.replace("{{testName}}", test[0].name);
-  question = question.replace("{{testId}}", test[0].id);
-  html = html.replace("{{component}}", question);
-  html = html.replace("{{jsCustom}}", `
+  question = question.replace("{{testName}}", test.name);
+  question = question.replace("{{testId}}", test.id);
+
+  indexHtml = indexHtml.replace("{{component}}", question);
+  indexHtml = indexHtml.replace("{{jsCustom}}", `
     <script type="module">
       import { QuestionPage } from "/js/question.js";
       window.questionPage = new QuestionPage();
@@ -126,18 +132,20 @@ router.get("/:slug/question", (req, res) => {
   `);
 
 
-  res.end(html);
+  res.end(indexHtml);
 });
 
 router.post("/question/create", (req, res) => {
-  let data = req.body;
+  const { test_id, questions } = req.body;
+  let data = { test_id, questions };
+
   let tests = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8'));
   let errors = {
     type: 'error',
     messages: []
   };
 
-  if (data.questions && Object.keys(data.questions).length > 0) {
+  if (data.questions) {
     let newQuestions = data.questions.map((q) => {
       q.id = uuid.v1();
 
@@ -176,20 +184,23 @@ router.post("/question/create", (req, res) => {
         }
       ]
     }
+
     res.status(201).send(response);
   }
 });
 
 router.get("/:slug/start", (req, res) => {
-  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).filter(test => test.slug === req.params.slug);
+  const slug = req.params.slug;
+
+  let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).find(test => test.slug === slug);
 
   let performTestQuestionTemplate = fs.readFileSync('././assets/templates/perform-test-questions.html', 'utf-8');
 
   let indexHtml = fs.readFileSync('././assets/html/index.html', 'utf-8');
   let performTest = fs.readFileSync('././assets/html/test/perform-test.html', 'utf-8');
 
-  if (test[0].questions) {
-    let questions = test[0].questions.sort(() => Math.random() - 0.5);
+  if (test.questions) {
+    let questions = test.questions.sort(() => Math.random() - 0.5);
 
     let performTestQuestionHtml = questions.map((q, i) => {
       let num = i + 1;
@@ -207,41 +218,44 @@ router.get("/:slug/start", (req, res) => {
       return questionHtml;
     });
 
-    performTest = performTest.replace("{{testName}}", test[0].name);
-    performTest = performTest.replace("{{testId}}", test[0].id);
+    performTest = performTest.replace("{{testName}}", test.name);
+    performTest = performTest.replace("{{testId}}", test.id);
     performTest = performTest.replace("{{questions}}", performTestQuestionHtml.join(""));
 
     res.cookie("stepLimit", questions.length);
   } else {
     performTest = fs.readFileSync('././assets/html/question/no-question.html', 'utf-8');
-    performTest = performTest.replace("{{test}}", test[0].name);
-    performTest = performTest.replace("{{slug}}", test[0].slug);
+    performTest = performTest.replace("{{test}}", test.name);
+    performTest = performTest.replace("{{slug}}", test.slug);
   }
 
   indexHtml = indexHtml.replace("{{component}}", performTest);
   indexHtml = indexHtml.replace("{{jsCustom}}", `
-  <script type="module">
-    import { PerformTestPage } from "/js/perform-test.js";
-    window.PerformTestPage = new PerformTestPage();
-  </script>
-`);
+    <script type="module">
+      import { PerformTestPage } from "/js/perform-test.js";
+      window.PerformTestPage = new PerformTestPage();
+    </script>
+  `);
 
   res.end(indexHtml);
 });
 
 router.post("/attempt", (req, res) => {
-  let data = req.body;
+  const resultId = uuid.v1();
+  const { test_id, questions } = req.body;
+  let data = { test_id, questions };
+
   let test = JSON.parse(fs.readFileSync('./src/data/test.json', 'utf-8')).find(t => t.id == data.test_id);
   let result = JSON.parse(fs.readFileSync('./src/data/result.json', 'utf-8'));
-  let resultId = uuid.v1();
 
-  data.test_name = test.name;
+  const test_name = test.name;
+
   let errors = {
     type: 'error',
     messages: []
   };
 
-  if (Object.keys(data.questions).length === 0) {
+  if (!data.questions.length) {
     errors.messages.push({ text: 'É obrigatório responder pelo menos 1 questão' });
   }
 
