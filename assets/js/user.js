@@ -5,7 +5,7 @@ export class User {
   constructor() {
     let loginButton = document.querySelector("#userLoginForm #loginButton");
     let createUserButton = document.querySelector("#userRegisterForm #createUserButton");
-    
+
     this.token = getCookie("token");
 
     window.onload = () => {
@@ -20,7 +20,7 @@ export class User {
 
         document.querySelector(".menu-principal .login-item")?.remove();
         document.querySelector(".menu-principal .user-link")?.classList.add("hide");
-      }else{
+      } else {
         addLogin();
 
         document.querySelector("#loginButton").addEventListener('click', (e) => {
@@ -82,7 +82,7 @@ export class User {
 
   async logout() {
     try {
-      await   fetch("/user/logout", {
+      await fetch("/user/logout", {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

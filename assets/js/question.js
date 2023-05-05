@@ -1,4 +1,4 @@
-import {generatetoast, getCookie} from "./helpers.js";
+import { generatetoast, getCookie } from "./helpers.js";
 
 export class QuestionPage {
   maxOptions = 0;
@@ -73,8 +73,8 @@ export class QuestionPage {
     option.setAttribute('type', 'text');
     option.setAttribute('name', newOption.input);
     option.placeholder = 'Alternativa ' + newOption.value;
-    
-    document.querySelector("#optionsquestion" + this.lastId +" .options-list").appendChild(option);
+
+    document.querySelector("#optionsquestion" + this.lastId + " .options-list").appendChild(option);
 
     let answer = document.createElement('option');
     answer.setAttribute('value', newOption.value);
@@ -82,7 +82,7 @@ export class QuestionPage {
     document.querySelector("#answerlist-" + this.lastId).appendChild(answer);
 
     if (question.options.length >= this.maxOptions) {
-      let button = document.querySelector("form #addOption"+this.lastId);
+      let button = document.querySelector("form #addOption" + this.lastId);
       button.setAttribute('disabled', true);
       button.classList.add('disabled-button');
       button.setAttribute('title', 'Você só pode adicionar ' + getCookie("maxOptions") + ' opções nesta questão');

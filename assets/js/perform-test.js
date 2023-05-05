@@ -40,7 +40,7 @@ export class PerformTestPage {
     let nextStep = 'step-' + prevId;
 
     this.lastId--;
-    
+
     document.getElementById(prevStep).classList.remove('hide');
     document.querySelector("#" + prevStep + " input").setAttribute('disabled', false);
 
@@ -59,7 +59,7 @@ export class PerformTestPage {
       question: 'question-' + this.lastId,
       optionSelected: 'optionQuestion-' + document.getElementById('question-' + this.lastId).value,
     };
-  
+
     document.getElementById(prevStep).classList.add('hide');
     document.querySelector("#" + prevStep + " input").setAttribute('disabled', true);
 
@@ -107,14 +107,14 @@ export class PerformTestPage {
         const row = this.answersConfig[key];
         const options = document.getElementsByName(row.optionSelected);
         let optionValue;
-        
+
         for (const option of options) {
-          if(option.checked){
+          if (option.checked) {
             optionValue = option.value;
           }
         }
 
-        if(optionValue){
+        if (optionValue) {
           data.questions.push({
             id: document.getElementById(row.question).value,
             optionSelected: optionValue
