@@ -114,11 +114,12 @@ export class User {
           'Content-Type': 'application/json'
         },
         body: data,
-      }).then((response) => {
-        return response.json();
-      }).then((response) => {
+      }).then(response => response.json()).then((response) => {
         generatetoast(response);
 
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
       });
     } catch (error) {
       console.log(error);

@@ -81,7 +81,7 @@ router.post("/create", (req, res) => {
       type: 'success',
       messages: [
         {
-          text: JSON.stringify(Object.keys(users.find(u => u.email === req.body.email)).length)
+          text: "Usuário criado com sucesso"
         }
       ]
     };
