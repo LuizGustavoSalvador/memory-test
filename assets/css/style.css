@@ -219,6 +219,9 @@ a :hover {
 .main-header .header-grid ul li:not(:last-child) {
   margin-right: 25px;
 }
+.main-header .header-grid ul li.hide {
+  display: none;
+}
 .main-content {
   position: relative;
   min-height: 80vh;

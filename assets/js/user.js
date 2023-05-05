@@ -18,7 +18,8 @@ export class User {
           this.logout();
         });
 
-        document.querySelector("ul .login-item")?.remove();
+        document.querySelector(".menu-principal .login-item")?.remove();
+        document.querySelector(".menu-principal .user-link")?.classList.add("hide");
       }else{
         addLogin();
 
@@ -28,7 +29,8 @@ export class User {
           window.location.replace("/").reload();
         });
 
-        document.querySelector("ul .logout-item")?.remove();
+        document.querySelector(".menu-principal .user-link")?.classList.remove("hide");
+        document.querySelector(".menu-principal .logout-item")?.remove();
       }
     };
 

@@ -7,13 +7,17 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   let indexHtml = fs.readFileSync("././assets/html/index.html", "utf-8");
-  let a = fs.readFileSync("./src/data/user.json");
+  // let a = fs.readFileSync("./src/data/user.json");
   const register = fs.readFileSync("././assets/html/user/register.html");
 
-  res.writeHead(200, { 'Content-Type': 'text/html' });
+  if(!req.cookies.token){
+    res.writeHead(200, { 'Content-Type': 'text/html' });
   indexHtml = indexHtml.replace("{{component}}", register);
 
   res.end(indexHtml)
+  }else{
+    res.redirect("/test").end();
+  }
 });
 
 router.post("/create", (req, res) => {
